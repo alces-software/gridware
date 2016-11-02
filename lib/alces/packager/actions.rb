@@ -985,10 +985,10 @@ EOF
       def modules
         modules = required_modules
         module_loading = modules.map do |m|
-          "eval `/opt/clusterware/opt/Modules/bin/modulecmd sh load #{m} || echo false`"
+          "eval `#{ENV['cw_ROOT']}/opt/modules/bin/modulecmd sh load #{m} || echo false`"
         end.join("\n")
         <<-BASH
-eval `/opt/clusterware/opt/Modules/bin/modulecmd sh purge || echo false` || true
+eval `#{ENV['cw_ROOT']}/opt/modules/bin/modulecmd sh purge || echo false` || true
 #{module_loading}
 for a in #{modules.join(" ")}; do
   [[ ":$LOADEDMODULES:" =~ ":$a" ]] || false
