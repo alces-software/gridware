@@ -158,8 +158,12 @@ EOF
           h[:description] = "Description of #{name}"
           h[:region_map] = {
             'eu-west-1' => 'https://s3-eu-west-1.amazonaws.com/alces-gridware-eu-west-1/dist',
+            #'eu-west-2' => 'https://s3-eu-west-2.amazonaws.com/alces-gridware-eu-west-2/dist',
+            'eu-west-2' => 'https://s3-eu-west-1.amazonaws.com/alces-gridware-eu-west-1/dist',
             'eu-central-1' => 'https://s3-eu-central-1.amazonaws.com/alces-gridware-eu-central-1/dist',
             'us-east-1' => 'https://s3.amazonaws.com/alces-gridware-eu-east-1/dist',
+            #'us-east-2' => 'https://s3-us-east-2.amazonaws.com/alces-gridware-us-east-2/dist',
+            'us-east-2' => 'https://s3.amazonaws.com/alces-gridware-eu-east-1/dist',
             #'us-west-1' => 'https://s3-us-west-1.amazonaws.com/alces-gridware-us-west-1/dist',
             #'us-west-2' => 'https://s3-us-west-2.amazonaws.com/alces-gridware-us-west-2/dist',
             'us-west-1' => 'https://s3.amazonaws.com/alces-gridware-eu-east-1/dist',
@@ -167,10 +171,12 @@ EOF
             #'ap-northeast-1' => 'https://s3-ap-northeast-1.amazonaws.com/alces-gridware-ap-northeast-1/dist',
             #'ap-northeast-2' => 'https://s3-ap-northeast-2.amazonaws.com/alces-gridware-ap-northeast-2/dist',
             #'ap-southeast-1' => 'https://s3-ap-southeast-1.amazonaws.com/alces-gridware-ap-southeast-1/dist',
+            #'ap-south-1' => 'https://s3-ap-south-1.amazonaws.com/alces-gridware-ap-south-1/dist',
             'ap-northeast-1' => 'https://s3-ap-southeast-2.amazonaws.com/alces-gridware-ap-southeast-2/dist',
             'ap-northeast-2' => 'https://s3-ap-southeast-2.amazonaws.com/alces-gridware-ap-southeast-2/dist',
             'ap-southeast-1' => 'https://s3-ap-southeast-2.amazonaws.com/alces-gridware-ap-southeast-2/dist',
             'ap-southeast-2' => 'https://s3-ap-southeast-2.amazonaws.com/alces-gridware-ap-southeast-2/dist',
+            'ap-south-1' => 'https://s3-ap-southeast-2.amazonaws.com/alces-gridware-ap-southeast-2/dist',
             #'sa-east-1' => 'https://s3-sa-east-1.amazonaws.com/alces-gridware-sa-east-1/dist'
             'sa-east-1' => 'https://s3.amazonaws.com/alces-gridware-eu-east-1/dist'
           }
@@ -241,12 +247,12 @@ EOF
       end
 
       def global_modulespaths
-        f = File.join(ENV['cw_ROOT'], 'etc', 'gridware', 'global', 'modulespath')
+        f = File.join(ENV['cw_ROOT'], 'etc', 'modulerc', 'modulespath')
         paths = File.exist?(f) ? File.read(f).split("\n") : []
       end
 
       def modulespaths(&block)
-        f = File.join(ENV['cw_ROOT'], 'etc', 'gridware', 'global', 'modulespath')
+        f = File.join(ENV['cw_ROOT'], 'etc', 'modulerc', 'modulespath')
         paths = File.exist?(f) ? File.read(f).split("\n") : []
         if block.call(paths)
           File.write(f, paths.join("\n"))
