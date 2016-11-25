@@ -163,6 +163,8 @@ module Alces
                 install_opts = OptionSet.new(options)
                 if defn.metadata[:variants] || variant != 'default'
                   install_opts.variant = variant
+                elsif variant == 'default'
+                  install_opts.variant = nil
                 end
                 install_opts.binary = true unless options.compile
                 DefinitionHandler.install(defn, install_opts)
