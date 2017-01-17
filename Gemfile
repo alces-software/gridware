@@ -32,7 +32,6 @@ gem 'dm-sqlite-adapter', '>= 1.2.0'
 gem 'dm-migrations', '>= 1.2.0'
 gem 'dm-aggregates', '>= 1.2.0'
 gem 'memoist'
-gem 'ronn'
 
 group :test do
   gem 'minitest'
