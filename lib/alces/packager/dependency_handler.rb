@@ -54,7 +54,7 @@ module Alces
           s << "_#{variant}" if variant
           s << " = #{metadata.version}" unless metadata.version.empty?
         end
-        find_requires(Tree::TreeNode.new(v_str), ignore_build)
+        find_requires(Tree::TreeNode.new(v_str), ignore_build, metadata.repo.name)
       end
 
       def resolve_requirements_tree(root = requirements_tree)
@@ -95,7 +95,7 @@ module Alces
         end.uniq
       end
 
-      def find_requires(node, ignore_build)
+      def find_requires(node, ignore_build, explicit_repo = nil)
         node.tap do
           path = node.name
           if path =~ /(\S*)_(\S*)( .*)?/
@@ -104,7 +104,7 @@ module Alces
           else
             variant = 'default'
           end
-          if defn = find_definition(path)
+          if defn = find_definition((explicit_repo.nil? ? "" : "#{explicit_repo}/") + path)
             if installed?(path, variant)
               return if ignore_satisfied
               phases = [:runtime]
