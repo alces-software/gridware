@@ -89,6 +89,13 @@ module Alces
       def disable
         if !enabled?
           say("#{"WARNING!".color(:yellow)} Depot already disabled: #{name}")
+        elsif loaded_modules?
+          say "\n#{"ERROR".color(:red).underline}: The following modules have been loaded from this depot and must be unloaded to continue:\n\n"
+          loaded_modules.each do |mod|
+            say " - #{mod}"
+          end
+          say "\nThis can be done using `alces module purge` or `alces module unload $module`\n\n"
+          return false
         else
           title "Disabling depot: #{name}"
           doing 'Disable'
@@ -261,6 +268,10 @@ EOF
         end
       end
 
+      def path
+        depot_path(name)
+      end
+
       def depot_path(name)
         File.join(Config.depotroot,name)
       end
@@ -271,6 +282,22 @@ EOF
 
       def depot_install_path(identifier)
         File.join(depot_root,identifier.to_s)
+      end
+
+      def provides_module(module_path)
+        module_path =~ /^#{path}/
+      end
+
+      def loaded_modules?
+        !loaded_modules.empty?
+      end
+
+      def loaded_modules
+        all_loaded_modules.select {|module_path| provides_module(module_path)}
+      end
+
+      def all_loaded_modules
+        (ENV['_LMFILES_'] || '').split(':')
       end
     end
   end
