@@ -83,7 +83,7 @@ class TestHandlerProxy < MiniTest::Test
     end
 
     def actions_requiring_update
-      Alces::Packager::HandlerProxy::ACTIONS_REQUIRING_UPDATE
+      Alces::Packager::HandlerProxy::ACTIONS_REQUIRING_PACKAGE_REPO_UPDATE
     end
 
     def actions_not_requiring_update

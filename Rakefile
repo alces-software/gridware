@@ -2,7 +2,8 @@
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
-  # Set up ruby environment - duplicated from libexec/actions/gridware
+  # Set up ruby environment - duplicated/adapted from
+  # $clusterware-services/gridware/libexec/actions/gridware
   ####
   ENV['cw_ROOT'] = '/opt/clusterware'
 
@@ -10,8 +11,8 @@ Rake::TestTask.new do |t|
   ENV['cw_GRIDWARE_root'] = v unless v.empty?
 
   ENV['ALCES_CONFIG_PATH'] ||= "#{ENV['cw_GRIDWARE_root']}/etc:#{ENV['cw_ROOT']}/etc"
-  ENV['BUNDLE_GEMFILE'] ||= "#{ENV['cw_ROOT']}/lib/ruby/Gemfile"
-  $: << "#{ENV['cw_ROOT']}/lib/ruby/lib"
+  ENV['BUNDLE_GEMFILE'] ||= "#{ENV['cw_ROOT']}/opt/gridware/Gemfile"
+  $: << "#{ENV['cw_ROOT']}/opt/gridware/lib"
 
   require 'rubygems'
   require 'bundler'
