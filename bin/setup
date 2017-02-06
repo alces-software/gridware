@@ -1,0 +1,28 @@
+#!/bin/bash
+
+setup() {
+    local a xdg_config
+    IFS=: read -a xdg_config <<< "${XDG_CONFIG_HOME:-$HOME/.config}:${XDG_CONFIG_DIRS:-/etc/xdg}"
+    for a in "${xdg_config[@]}"; do
+        if [ -e "${a}"/clusterware/config.rc ]; then
+            source "${a}"/clusterware/config.rc
+            break
+        fi
+    done
+    if [ -z "${cw_ROOT}" ]; then
+        echo "$0: unable to locate clusterware configuration"
+        exit 1
+    fi
+    kernel_load
+}
+
+main() {
+    # Adapted from Gridware installation process in
+    # $clusterware-services/gridware/metadata.yml
+    yum install -y gcc-c++ gmp-devel sqlite-devel
+    PATH="${cw_ROOT}/opt/git/bin:${cw_ROOT}/opt/ruby/bin:$PATH"
+    bundle install --local --path=vendor
+}
+
+setup
+main

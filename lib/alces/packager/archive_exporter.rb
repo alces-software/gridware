@@ -111,7 +111,7 @@ module Alces
           File.write(dest_lib_module_file,s)
         end
 
-        rewritten_files, bad_files = detect_bad_paths(dest_pkg_dir, depot_path)
+        rewritten_files, bad_files = detect_bad_paths(File.join(dest_pkg_dir, version), depot_path)
         h[:rewritten] = rewritten_files
 
         File.write(File.join(dir,'metadata.yml'), h.to_yaml)
