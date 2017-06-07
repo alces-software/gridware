@@ -63,6 +63,30 @@ module Alces
           end
         end
 
+        def archives_dir
+          if ENV['cw_GRIDWARE_userspace'] == 'true'
+            File.expand_path('~/.cache/gridware/cache/archives')
+          else
+            method_missing(:archives_dir)
+          end
+        end
+
+        def buildroot
+          if ENV['cw_GRIDWARE_userspace'] == 'true'
+            File.expand_path('~/.cache/gridware/cache/src')
+          else
+            method_missing(:build_root)
+          end
+        end
+
+        def depotroot
+          if ENV['cw_GRIDWARE_userspace'] == 'true'
+            File.expand_path('~/gridware')
+          else
+            method_missing(:build_root)
+          end
+        end
+
         def method_missing(s,*a,&b)
           if config.has_key?(s)
             config[s]
