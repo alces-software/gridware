@@ -88,10 +88,10 @@ module Alces
         end
 
         def default_depot
-          if config.has_key?('default_depot')
-            config['default_depot']
-          elsif ENV['cw_GRIDWARE_userspace'] == 'true'
+          if ENV['cw_GRIDWARE_userspace'] == 'true'
             'personal'
+          elsif config.has_key?('default_depot')
+            config['default_depot']
           else
             'local'
           end
