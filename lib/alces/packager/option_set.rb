@@ -77,7 +77,7 @@ module Alces
         end
 
         self.compiler ||= :first
-        self.depot ||= (Config.default_depot rescue 'local')
+        self.depot ||= (Config.default_depot)
       end
 
       def search_args
