@@ -31,11 +31,24 @@ module Alces
         use_default_params: false
       }
 
+      USERSPACE_CONFIG = {
+          log_root: File.expand_path('~/.cache/gridware/log'),
+          archives_dir: File.expand_path('~/.cache/gridware/cache/archives'),
+          buildroot: File.expand_path('~/.cache/gridware/cache/src'),
+          depotroot: File.expand_path('~/gridware'),
+          default_depot: 'personal'
+      }
+
       class << self
         def config
           @config ||= DEFAULT_CONFIG.dup.tap do |h|
             cfgfile = Alces::Tools::Config.find("gridware", false)
             h.merge!(YAML.load_file(cfgfile)) unless cfgfile.nil?
+
+            if ENV['cw_GRIDWARE_userspace'] == 'true'
+              h.merge!(USERSPACE_CONFIG)
+            end
+
           end
         end
 
@@ -55,43 +68,9 @@ module Alces
           File.expand_path(File.join(depot_path(depot),'etc'))
         end
 
-        def log_root
-          if ENV['cw_GRIDWARE_userspace'] == 'true'
-            File.expand_path('~/.cache/gridware/log')
-          else
-            method_missing(:log_root)
-          end
-        end
-
-        def archives_dir
-          if ENV['cw_GRIDWARE_userspace'] == 'true'
-            File.expand_path('~/.cache/gridware/cache/archives')
-          else
-            method_missing(:archives_dir)
-          end
-        end
-
-        def buildroot
-          if ENV['cw_GRIDWARE_userspace'] == 'true'
-            File.expand_path('~/.cache/gridware/cache/src')
-          else
-            method_missing(:build_root)
-          end
-        end
-
-        def depotroot
-          if ENV['cw_GRIDWARE_userspace'] == 'true'
-            File.expand_path('~/gridware')
-          else
-            method_missing(:build_root)
-          end
-        end
-
         def default_depot
-          if ENV['cw_GRIDWARE_userspace'] == 'true'
-            'personal'
-          elsif config.has_key?('default_depot')
-            config['default_depot']
+          if config.has_key?(:default_depot)
+            config[:default_depot]
           else
             'local'
           end
