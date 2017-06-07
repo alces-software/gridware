@@ -55,6 +55,14 @@ module Alces
           File.expand_path(File.join(depot_path(depot),'etc'))
         end
 
+        def log_root
+          if ENV['cw_GRIDWARE_userspace'] == 'true'
+            File.expand_path('~/.cache/gridware/log')
+          else
+            method_missing(:log_root)
+          end
+        end
+
         def method_missing(s,*a,&b)
           if config.has_key?(s)
             config[s]
