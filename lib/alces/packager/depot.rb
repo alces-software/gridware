@@ -107,7 +107,7 @@ module Alces
       end
 
       def enabled?
-        global_modulespaths.include?(target) || user_modulespaths.include?(target)
+        global_modulespaths.include?(target) || (Config.userspace? && user_modulespaths.include?(target))
       end
 
       def init(disabled = false)
