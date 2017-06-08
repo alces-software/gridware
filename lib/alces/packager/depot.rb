@@ -266,7 +266,7 @@ EOF
       end
 
       def modulespaths(&block)
-        if ENV['cw_GRIDWARE_notify'] == 'true'
+        if Config.userspace?
           f = File.expand_path('~/.modulespath')
         else
           f = File.join(ENV['cw_ROOT'], 'etc', 'modulerc', 'modulespath')

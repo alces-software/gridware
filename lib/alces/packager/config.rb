@@ -45,11 +45,15 @@ module Alces
             cfgfile = Alces::Tools::Config.find("gridware", false)
             h.merge!(YAML.load_file(cfgfile)) unless cfgfile.nil?
 
-            if ENV['cw_GRIDWARE_userspace'] == 'true'
+            if userspace?
               h.merge!(USERSPACE_CONFIG)
             end
 
           end
+        end
+
+        def userspace?
+          ENV['cw_GRIDWARE_userspace'] == 'true'
         end
 
         def packages_dir(depot)
