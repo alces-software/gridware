@@ -704,9 +704,8 @@ EOF
 
       private
       def correct_permissions
-        FileUtils.chown_R(nil, 'gridware', dest_dir)
         FileUtils.chmod_R("ug+w,a+r", dest_dir, force: true)
-        FileUtils.chmod("g+xs,a+x", directories_within(dest_dir))
+        FileUtils.chmod("u+xs,a+x", directories_within(dest_dir))
       end
 
       def directories_within(base)

@@ -234,11 +234,6 @@ module Alces
             tgt_depends_file = File.join(dest_depends_dir, "#{[type, name, version, tagging[:tag]].join('-')}.sh")
             tgt_pkg_dir = File.join(dest_pkg_dir, tagging[:tag])
 
-            FileUtils.chown(nil, 'gridware', tgt_depends_file) if File.exists?(tgt_depends_file)
-            FileUtils.chown(nil, 'gridware', tgt_module_file)
-            FileUtils.chown_R(nil, 'gridware', tgt_pkg_dir)
-            FileUtils.chmod_R("g+w", tgt_pkg_dir, force: true)
-            FileUtils.chmod("g+xs", directories_within(tgt_pkg_dir))
           end
           say 'OK'.color(:green)
         end
@@ -315,13 +310,6 @@ module Alces
           tgt_lib_module_file = File.join(dest_lib_module_dir, version)
           tgt_depends_file = File.join(dest_depends_dir, "#{['compilers', name, version].join('-')}.sh")
           tgt_pkg_dir = File.join(dest_pkg_dir, version)
-
-          FileUtils.chown(nil, 'gridware', tgt_depends_file) if File.exists?(tgt_depends_file)
-          FileUtils.chown(nil, 'gridware', tgt_compiler_module_file)
-          FileUtils.chown(nil, 'gridware', tgt_lib_module_file)
-          FileUtils.chown_R(nil, 'gridware', tgt_pkg_dir)
-          FileUtils.chmod_R("g+w", tgt_pkg_dir, force: true)
-          FileUtils.chmod("g+xs", directories_within(tgt_pkg_dir))
         end
         say 'OK'.color(:green)
       end
