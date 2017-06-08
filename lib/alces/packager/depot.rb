@@ -107,7 +107,7 @@ module Alces
       end
 
       def enabled?
-        global_modulespaths.include?(target)
+        global_modulespaths.include?(target) || user_modulespaths.include?(target)
       end
 
       def init(disabled = false)
@@ -260,8 +260,18 @@ EOF
         paths = File.exist?(f) ? File.read(f).split("\n") : []
       end
 
+      def user_modulespaths
+        f = File.expand_path('~/.modulespath')
+        paths = File.exist?(f) ? File.read(f).split("\n") : []
+      end
+
       def modulespaths(&block)
-        f = File.join(ENV['cw_ROOT'], 'etc', 'modulerc', 'modulespath')
+        if ENV['cw_GRIDWARE_notify'] == 'true'
+          f = File.expand_path('~/.modulespath')
+        else
+          f = File.join(ENV['cw_ROOT'], 'etc', 'modulerc', 'modulespath')
+        end
+
         paths = File.exist?(f) ? File.read(f).split("\n") : []
         if block.call(paths)
           File.write(f, paths.join("\n"))
