@@ -132,7 +132,12 @@ module Alces
 
       def purge(non_interactive = false)
         say "Purging depot: #{name.color(:magenta).bold}"
-        files = [Depot.hash_path_for(name), depot_path(name)]
+        files = [
+            Depot.hash_path_for(name),
+            depot_path(name),
+            (File.readlink(File.join(depot_path(name), '.gridware-userspace')) rescue nil)
+        ].compact
+
         msg = <<EOF
 Purge operation will remove the following files/directories:
   #{files.join("\n  ")}
