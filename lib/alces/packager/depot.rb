@@ -30,9 +30,19 @@ module Alces
       include Alces::Tools::Logging
 
       class << self
-        def hash_path_for(name)
+
+        # Return the path to the hash directory for the depot <name>.
+        # If global is true, this will always return the path under /opt/gridware/
+        # representing the depot, even if the depot is a userspace one.
+        # If global is false, then this function will return the path within the user's
+        # home directory representing the depot.
+        def hash_path_for(name, global=true)
           depot_path = File.join(Config.depotroot,name)
-          if File.symlink?(depot_path)
+
+          userspace_link = File.join(depot_path, '.gridware-userspace')
+          if File.symlink?(userspace_link) && global
+            File.readlink(userspace_link)
+          elsif File.symlink?(depot_path)
             File.readlink(depot_path)
           else
             nil
@@ -133,9 +143,9 @@ module Alces
       def purge(non_interactive = false)
         say "Purging depot: #{name.color(:magenta).bold}"
         files = [
-            Depot.hash_path_for(name),
+            Depot.hash_path_for(name, false),
             depot_path(name),
-            (File.readlink(File.join(depot_path(name), '.gridware-userspace')) rescue nil)
+            Depot.hash_path_for(name)
         ].compact
 
         msg = <<EOF
