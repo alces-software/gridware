@@ -260,6 +260,12 @@ Perform a depot operation. Supported operations:
         c.action HandlerProxy, :import
       end
       set_aliases(:import, min: 2)
+
+      command :distro_deps do |c|
+        c.syntax = 'alces gridware distro_deps <distro_pkg> [<distro_pkg> [...]]'
+        c.description = 'Install dependencies from the distribution\'s package manager'
+        c.action HandlerProxy, :distro_deps
+      end
     end
   end
 end

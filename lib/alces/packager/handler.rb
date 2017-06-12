@@ -33,6 +33,7 @@ require 'alces/packager/errors'
 require 'alces/packager/io_handler'
 require 'alces/packager/dependency_handler'
 require 'alces/packager/depot_handler'
+require 'alces/packager/distro_deps_handler'
 require 'alces/packager/option_set'
 require 'terminal-table'
 require 'memoist'
@@ -236,6 +237,10 @@ module Alces
             DefinitionHandler.requires(defn, options)
           end
         end
+      end
+
+      def distro_deps
+        DistroDepsHandler.install(options)
       end
 
       private
