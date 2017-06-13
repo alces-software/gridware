@@ -210,7 +210,7 @@ module Alces
       def default
         with_depot do
           # set the specified package as default
-          if (package_path = package_path).nil?
+          if package_path.nil?
             raise MissingArgumentError, 'Please supply a package path'
           end
           package_parts = package_path.split('/')
