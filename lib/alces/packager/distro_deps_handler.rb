@@ -52,17 +52,55 @@ module Alces
       private
 
       def install_deps
-        say 'Soon™'
+        p required_distro_packages
+      end
+
+      def required_distro_packages
+        deps_hashes = [].tap do |a|
+          if defn.metadata[:dependencies][options.phase]
+            a << defn.metadata[:dependencies][options.phase]
+            if options.phase == :build && defn.metadata[:dependencies].key?(:runtime)
+              a << defn.metadata[:dependencies][:runtime]
+            end
+          else
+            a << defn.metadata[:dependencies]
+          end
+        end
+
+        deps = deps_hashes.map do |deps_hash|
+          [*deps_hash[stem]] + [*deps_hash[ENV['cw_DIST']]]
+        end.flatten
+
+        return deps
       end
 
       def install_cmd
-        case ENV['cw_DIST']
+        case cw_dist
           when /^el/
             "/usr/bin/yum install -y %s >>#{Config.log_root}/depends.log 2>&1"
           when /^ubuntu/
             "/usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1"
         end
       end
+
+      def stem
+        case cw_dist
+          when /^el/
+            'el'
+          when /^ubuntu/
+            'ubuntu'
+        end
+      end
+
+      def cw_dist
+        @cw_dist ||= if !ENV['cw_DIST']
+            warning 'cw_DIST environment variable not set, defaulting to el7'
+          'el7'
+        else
+          ENV['cw_DIST']
+        end
+      end
+
     end
   end
 end
