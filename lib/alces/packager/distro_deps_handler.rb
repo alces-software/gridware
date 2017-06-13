@@ -33,7 +33,7 @@ module Alces
         end
       end
 
-      delegate :say, :warning, :to => IoHandler
+      delegate :doing, :say, :warning, :to => IoHandler
 
       attr_accessor :defn, :options
       def initialize(defn, options)
@@ -52,7 +52,16 @@ module Alces
       private
 
       def install_deps
-        p required_distro_packages
+        required_distro_packages.each do |pkg|
+          doing pkg
+          if installed?(pkg)
+            say 'already installed'
+          elsif available?(pkg)
+            # TODO check permissions and do installation
+          else
+            raise NotFoundError, "Package #{pkg} is required but not available."
+          end
+        end
       end
 
       def required_distro_packages
@@ -74,12 +83,38 @@ module Alces
         return deps
       end
 
+      def installed?(pkg)
+        return system(sprintf(check_command, pkg))
+      end
+
+      def available?(pkg)
+        return system(sprintf(available_command, pkg))
+      end
+
       def install_cmd
         case cw_dist
           when /^el/
             "/usr/bin/yum install -y %s >>#{Config.log_root}/depends.log 2>&1"
           when /^ubuntu/
             "/usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1"
+        end
+      end
+
+      def check_command
+        case cw_dist
+          when /^el/
+            'rpm -q %s >/dev/null 2>/dev/null'
+          when /^ubuntu/
+            'dpkg -l %s >/dev/null 2>/dev/null'
+        end
+      end
+
+      def available_command
+        case cw_dist
+          when /^el/
+            'env -i yum info %s >/dev/null 2>/dev/null'
+          when /^ubuntu/
+            'apt-cache show %s >/dev/null 2>/dev/null'
         end
       end
 
