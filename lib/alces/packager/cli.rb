@@ -265,6 +265,7 @@ Perform a depot operation. Supported operations:
         c.syntax = 'alces gridware distro_deps <distro_pkg> [<distro_pkg> [...]]'
         c.description = 'Install dependencies from the distribution\'s package manager'
         c.action HandlerProxy, :distro_deps
+        c.option '-p', '--phase STRING', String, 'Phase to install dependencies for (e.g. build, runtime)'
       end
     end
   end
