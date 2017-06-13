@@ -240,7 +240,11 @@ module Alces
       end
 
       def distro_deps
-        DistroDepsHandler.install(options)
+        with_depot do
+          with_definition do |defn|
+            DistroDepsHandler.install(defn, options)
+          end
+        end
       end
 
       private

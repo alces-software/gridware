@@ -33,15 +33,35 @@ module Alces
         end
       end
 
-      delegate :say, :to => IoHandler
+      delegate :say, :warning, :to => IoHandler
 
-      attr_accessor :options
-      def initialize(options)
+      attr_accessor :defn, :options
+      def initialize(defn, options)
+        self.defn = defn
         self.options = options
       end
 
-      def install()
-        say self.options.inspect
+      def install
+        if ENV['cw_GRIDWARE_userspace'] == 'true'
+          warning 'This command must be executed with sudo.'
+        else
+          install_deps
+        end
+      end
+
+      private
+
+      def install_deps
+        say 'Soon™'
+      end
+
+      def install_cmd
+        case ENV['cw_DIST']
+          when /^el/
+            "/usr/bin/yum install -y %s >>#{Config.log_root}/depends.log 2>&1"
+          when /^ubuntu/
+            "/usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1"
+        end
       end
     end
   end
