@@ -33,7 +33,7 @@ module Alces
         end
       end
 
-      delegate :doing, :say, :warning, :to => IoHandler
+      delegate :doing, :say, :warning, :with_spinner, :to => IoHandler
 
       attr_accessor :defn, :options
       def initialize(defn, options)
@@ -57,7 +57,10 @@ module Alces
           if installed?(pkg)
             say 'already installed'
           elsif available?(pkg)
-            # TODO check permissions and do installation
+            with_spinner do
+              # TODO check permissions and do installation
+            end
+            say 'TODO'.color(:yellow)
           else
             raise NotFoundError, "Package #{pkg} is required but not available."
           end
