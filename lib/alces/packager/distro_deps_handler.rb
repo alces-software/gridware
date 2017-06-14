@@ -19,7 +19,7 @@
 # For more information on the Alces Clusterware, please visit:
 # https://github.com/alces-software/clusterware
 #==============================================================================
-require 'memoist'
+require 'yaml'
 
 module Alces
   module Packager
@@ -57,10 +57,14 @@ module Alces
           if installed?(pkg)
             say 'already installed'
           elsif available?(pkg)
-            with_spinner do
-              # TODO check permissions and do installation
+            if have_permission_to_install?(pkg)
+              with_spinner do
+                # TODO check permissions and do installation
+              end
+              say 'TODO'.color(:yellow)
+            else
+              raise PermissionDeniedError, "Do not have permission to install #{pkg}. Please contact a system administrator."
             end
-            say 'TODO'.color(:yellow)
           else
             raise NotFoundError, "Package #{pkg} is required but not available."
           end
@@ -92,6 +96,22 @@ module Alces
 
       def available?(pkg)
         return system(sprintf(available_command, pkg))
+      end
+
+      def have_permission_to_install?(pkg)
+        user_whitelisted || package_whitelisted(pkg) || repo_whitelisted
+      end
+
+      def user_whitelisted
+        whitelist[:users].include?(ENV['SUDO_USER'])
+      end
+
+      def package_whitelisted(pkg)
+        whitelist[:packages].include?(pkg)
+      end
+
+      def repo_whitelisted
+        whitelist[:repos].include?(defn.repo.path)
       end
 
       def install_cmd
@@ -137,6 +157,18 @@ module Alces
         else
           ENV['cw_DIST']
         end
+      end
+
+      def whitelist
+        @whitelist ||= empty_whitelist.merge(whitelist_from_file)
+      end
+
+      def whitelist_from_file
+        YAML.load_file(File.join(Config.gridware, 'etc', 'whitelist.yml')) rescue {}
+      end
+
+      def empty_whitelist
+        { users: [], packages: [], repos: [] }
       end
 
     end
