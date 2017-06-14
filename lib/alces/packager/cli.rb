@@ -266,6 +266,7 @@ Perform a depot operation. Supported operations:
         c.description = 'Install dependencies from the distribution\'s package manager'
         c.action HandlerProxy, :distro_deps
         c.option '-p', '--phase STRING', String, 'Phase to install dependencies for (e.g. build, runtime)'
+        c.option '-l', '--log-root STRING', String, 'Path to log root directory'
       end
     end
   end
