@@ -223,19 +223,6 @@ module Alces
           else
             say 'OK'.color(:green)
           end
-
-          doing 'Permissions'
-          with_spinner do
-            # fix permissions on:
-            #   - modulefile
-            #   - depends file
-            #   - package tree
-            tgt_module_file = File.join(dest_module_dir, tagging[:tag])
-            tgt_depends_file = File.join(dest_depends_dir, "#{[type, name, version, tagging[:tag]].join('-')}.sh")
-            tgt_pkg_dir = File.join(dest_pkg_dir, tagging[:tag])
-
-          end
-          say 'OK'.color(:green)
         end
       end
 
@@ -299,19 +286,6 @@ module Alces
         else
           say 'OK'.color(:green)
         end
-
-        doing 'Permissions'
-        with_spinner do
-          # fix permissions on:
-          #   - modulefiles
-          #   - depends file
-          #   - package tree
-          tgt_compiler_module_file = File.join(dest_compiler_module_dir, version)
-          tgt_lib_module_file = File.join(dest_lib_module_dir, version)
-          tgt_depends_file = File.join(dest_depends_dir, "#{['compilers', name, version].join('-')}.sh")
-          tgt_pkg_dir = File.join(dest_pkg_dir, version)
-        end
-        say 'OK'.color(:green)
       end
 
       def load_metadata(dir)
