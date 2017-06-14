@@ -52,22 +52,32 @@ module Alces
       private
 
       def install_deps
+        packages_without_permission = []
         required_distro_packages.each do |pkg|
           doing pkg
           if installed?(pkg)
-            say 'already installed'
+            say 'already installed'.color(:green)
           elsif available?(pkg)
             if have_permission_to_install?(pkg)
+              installed_ok = false
               with_spinner do
-                # TODO check permissions and do installation
+                installed_ok = system(sprintf(install_cmd, pkg))
               end
-              say 'TODO'.color(:yellow)
+              if installed_ok
+                say 'OK'.color(:green)
+              else
+                say 'FAILED'.color(:red)
+              end
             else
-              raise PermissionDeniedError, "Do not have permission to install #{pkg}. Please contact a system administrator."
+              say 'PERMISSION DENIED'.color(:red)
+              packages_without_permission << pkg
             end
           else
             raise NotFoundError, "Package #{pkg} is required but not available."
           end
+        end
+        if !packages_without_permission.empty?
+          raise PermissionDeniedError, 'Some packages failed to install. Please contact your system administrator.'
         end
       end
 
