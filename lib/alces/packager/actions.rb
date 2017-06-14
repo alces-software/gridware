@@ -669,7 +669,8 @@ EOF
 
       def dependency_script(phase)
         if package.metadata[:dependencies]
-          "sudo -E #{ENV['cw_ROOT']}/bin/alces gridware distro_deps #{package.path} --phase #{phase} --log-root #{Config.log_root}"
+          %(#=Alces-Gridware-Dependencies:2
+sudo -E #{ENV['cw_ROOT']}/bin/alces gridware distro_deps #{package.path} --phase #{phase} --log-root #{Config.log_root})
         end
       end
 
