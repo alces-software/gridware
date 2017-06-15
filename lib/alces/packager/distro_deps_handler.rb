@@ -71,12 +71,14 @@ module Alces
             else
               say 'PERMISSION DENIED'.color(:red)
               packages_without_permission << pkg
+              STDERR.puts "Permission denied when trying to install #{pkg}"
             end
           else
             raise NotFoundError, "Package #{pkg} is required but not available."
           end
         end
         if !packages_without_permission.empty?
+          STDERR.puts 'Some packages failed to install. Please contact your system administrator.'
           raise PermissionDeniedError, 'Some packages failed to install. Please contact your system administrator.'
         end
       end
