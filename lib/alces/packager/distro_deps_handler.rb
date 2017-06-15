@@ -127,9 +127,9 @@ module Alces
       def install_cmd
         case cw_dist
           when /^el/
-            "/usr/bin/yum install -y %s >>#{log_root}/dependso.log 2>&1"
+            "/usr/bin/yum install -y %s >>#{log_root}/depends.log 2>&1"
           when /^ubuntu/
-            "/usr/bin/apt-get install -y %s >>#{log_root}/dependso.log 2>&1"
+            "/usr/bin/apt-get install -y %s >>#{log_root}/depends.log 2>&1"
         end
       end
 
