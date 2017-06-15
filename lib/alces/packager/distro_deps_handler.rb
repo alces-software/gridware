@@ -127,9 +127,9 @@ module Alces
       def install_cmd
         case cw_dist
           when /^el/
-            "/usr/bin/yum install -y %s >>#{log_root}/depends.log 2>&1"
+            "/usr/bin/yum install -y %s >>#{Config.log_root}/depends.log 2>&1"
           when /^ubuntu/
-            "/usr/bin/apt-get install -y %s >>#{log_root}/depends.log 2>&1"
+            "/usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1"
         end
       end
 
@@ -179,11 +179,6 @@ module Alces
 
       def empty_whitelist
         { users: [], packages: [], repos: [] }
-      end
-
-      def log_root
-        # This command is run as root but we may need to write to userspace log
-        options.log_root || Config.log_root
       end
 
     end
