@@ -32,10 +32,10 @@ module Alces
       }
 
       USERSPACE_CONFIG = {
-          log_root: File.expand_path('~/.cache/gridware/log'),
-          archives_dir: File.expand_path('~/.cache/gridware/cache/archives'),
-          buildroot: File.expand_path('~/.cache/gridware/cache/src'),
-          depotroot: File.expand_path('~/gridware'),
+          log_root: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/log"),
+          archives_dir: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/archives"),
+          buildroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/src"),
+          depotroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/gridware"),
           default_depot: 'personal'
       }
 
@@ -53,7 +53,7 @@ module Alces
         end
 
         def userspace?
-          ENV['cw_GRIDWARE_userspace'] == 'true'
+          ENV.has_key?('cw_GRIDWARE_userspace')
         end
 
         def packages_dir(depot)

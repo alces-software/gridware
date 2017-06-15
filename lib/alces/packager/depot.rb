@@ -276,7 +276,7 @@ EOF
       end
 
       def user_modulespaths
-        f = File.expand_path('~/.modulespath')
+        f = File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.modulespath")
         paths = File.exist?(f) ? File.read(f).split("\n") : []
       end
 
