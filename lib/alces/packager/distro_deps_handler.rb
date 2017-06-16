@@ -42,7 +42,7 @@ module Alces
       end
 
       def install
-        if ENV['cw_GRIDWARE_userspace'] == 'true'
+        if Process.euid != 0
           warning 'This command must be executed with sudo.'
         else
           install_deps
@@ -117,7 +117,7 @@ module Alces
       end
 
       def user_whitelisted
-        whitelist[:users].include?(ENV['SUDO_USER'])
+        whitelist[:users].include?(ENV['cw_GRIDWARE_userspace'])
       end
 
       def package_whitelisted(pkg)
