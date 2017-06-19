@@ -72,14 +72,16 @@ module Alces
               say 'PERMISSION DENIED'.color(:red)
               packages_without_permission << pkg
               STDERR.puts "Permission denied when trying to install #{pkg}"
+              make_install_request(pkg)
+
             end
           else
             raise NotFoundError, "Package #{pkg} is required but not available."
           end
         end
         if !packages_without_permission.empty?
-          STDERR.puts 'Some packages failed to install. Please contact your system administrator.'
-          raise PermissionDeniedError, 'Some packages failed to install. Please contact your system administrator.'
+          STDERR.puts 'Some packages failed to install. A request has been filed with your system administrator.'
+          raise PermissionDeniedError, 'Some packages failed to install. A request has been filed with your system administrator.'
         end
       end
 
@@ -128,6 +130,18 @@ module Alces
         whitelist[:repos].include?(defn.repo.path)
       end
 
+      def make_install_request(pkg)
+        system(
+            sprintf(
+                   install_request_command,
+                   ENV['cw_GRIDWARE_userspace'],
+                   defn,
+                   pkg,
+                   defn.repo.path
+            )
+        )
+      end
+
       def install_cmd
         case cw_dist
           when /^el/
@@ -153,6 +167,10 @@ module Alces
           when /^ubuntu/
             'apt-cache show %s >/dev/null 2>/dev/null'
         end
+      end
+
+      def install_request_command
+        "#{File.join(ENV['cw_ROOT'], 'libexec', 'share', 'distro-deps-notify')} %s %s %s %s"
       end
 
       def stem
