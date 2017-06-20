@@ -34,6 +34,7 @@ require 'alces/packager/io_handler'
 require 'alces/packager/dependency_handler'
 require 'alces/packager/depot_handler'
 require 'alces/packager/distro_deps_handler'
+require 'alces/packager/package_requests_handler'
 require 'alces/packager/option_set'
 require 'terminal-table'
 require 'memoist'
@@ -245,6 +246,11 @@ module Alces
             DistroDepsHandler.install(defn, options)
           end
         end
+      end
+
+      def package_requests
+        raise MissingArgumentError, 'Please supply an operation' if options.args.empty?
+        PackageRequestsHandler.handle(options)
       end
 
       private

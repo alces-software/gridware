@@ -267,6 +267,17 @@ Perform a depot operation. Supported operations:
         c.action HandlerProxy, :distro_deps
         c.option '-p', '--phase STRING', String, 'Phase to install dependencies for (e.g. build, runtime)'
       end
+
+      command :package_requests do |c|
+        c.syntax = 'alces gridware package_requests <operation>'
+        c.summary = 'Perform operations on distribution package installation requests'
+        c.description = <<-EOF
+Perform operations on distribution package installation requests. Supported operations:
+
+  (none - coming soon™)
+        EOF
+        c.action HandlerProxy, :package_requests
+      end
     end
   end
 end
