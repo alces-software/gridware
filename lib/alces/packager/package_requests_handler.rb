@@ -19,6 +19,9 @@
 # For more information on the Alces Clusterware, please visit:
 # https://github.com/alces-software/clusterware
 #==============================================================================
+
+require 'csv'
+
 module Alces
   module Packager
     class PackageRequestsHandler
@@ -54,6 +57,29 @@ module Alces
       attr_accessor :options
       def initialize(options)
         self.options = options
+      end
+
+      def list()
+        Alces::Packager::CLI.send(:enable_paging)
+        say <<-ERB.chomp
+<%= list(#{request_files.map { |rid| printable_request(rid) }.inspect}, :rows) %>
+        ERB
+      end
+
+      private
+
+      def request_files
+        Dir.entries(requests_dir).reject do |f|
+          f[0] == '.'
+        end
+      end
+
+      def requests_dir
+        File.join(Config.gridware, 'etc', 'package-requests')
+      end
+
+      def printable_request(request_id)
+        CSV.read(File.join(requests_dir, request_id),{col_sep: ' ', encoding: 'UTF-8'}).first.join("\t")
       end
 
     end
