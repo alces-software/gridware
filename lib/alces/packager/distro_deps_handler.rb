@@ -132,13 +132,13 @@ module Alces
 
       def make_install_request(pkg)
         system(
-            sprintf(
-                   install_request_command,
-                   ENV['cw_GRIDWARE_userspace'],
-                   defn,
-                   pkg,
-                   defn.repo.path
-            )
+          sprintf(
+            install_request_command,
+            ENV['cw_GRIDWARE_userspace'],
+            defn.name,
+            pkg,
+            defn.repo.path
+          )
         )
       end
 
