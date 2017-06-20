@@ -24,8 +24,13 @@ module Alces
     class PackageRequestsHandler
 
       class << self
+
         def handle(options)
-          ENV['cw_GRIDWARE_notify'] = 'false' unless options.notify
+
+          if Process.euid != 0
+            raise PermissionDeniedError, 'This command must be executed as root.'
+          end
+
           handler_opts = OptionSet.new(options)
           op = options.args.first
           handler_opts.args = options.args[1..-1]
