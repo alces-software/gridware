@@ -61,9 +61,9 @@ module Alces
 
       def list()
         Alces::Packager::CLI.send(:enable_paging)
-        say <<-ERB.chomp
-<%= list(#{request_files.map { |rid| printable_request(rid) }.inspect}, :rows) %>
-        ERB
+        say Terminal::Table.new(title: 'Pending installation requests',
+                                headings: ['User', 'Gridware package', 'Distro package', 'Repo path', 'Date'],
+                                rows: request_files.map { |rid| metadata(rid) })
       end
 
       private
@@ -78,8 +78,9 @@ module Alces
         File.join(Config.gridware, 'etc', 'package-requests')
       end
 
-      def printable_request(request_id)
-        CSV.read(File.join(requests_dir, request_id),{col_sep: ' ', encoding: 'UTF-8'}).first.join("\t")
+      def metadata(request_id)
+        rq_file = File.join(requests_dir, request_id)
+        CSV.read(rq_file,{col_sep: ' ', encoding: 'UTF-8'}).first.tap { |m| m << File.mtime(rq_file)}
       end
 
     end
