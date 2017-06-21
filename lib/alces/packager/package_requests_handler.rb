@@ -54,6 +54,8 @@ module Alces
         end
       end
 
+      delegate :say, :confirm, :doing, :title, :warning, :with_spinner, to: IoHandler
+
       attr_accessor :options
       def initialize(options)
         self.options = options
@@ -67,10 +69,24 @@ module Alces
       end
 
       def install
-        if options.all
-          say 'TODO Install all'
-        else
-          say 'TODO Install individual'
+        rqs = request_files
+        title "Processing #{rqs.length} installation request#{rqs.length != 1 ? 's' : ''}"
+        rqs.each_with_index do |rq, idx|
+          md = metadata(rq)
+
+          confirm = confirm_install(rq, md)
+
+          doing "(#{idx + 1}/#{rqs.length}) Installing #{md[2].color(:bold)}" + " on behalf of #{md[0]}".color(:cyan)
+          if confirm
+            if actually_install(md[2])
+              File.unlink(request_file(rq))
+              say 'Done'.color(:green)
+            else
+              say 'INSTALL FAILED'.color(:red)
+            end
+          else
+            say 'NOT INSTALLED'.color(:red)
+          end
         end
       end
 
@@ -87,8 +103,54 @@ module Alces
       end
 
       def metadata(request_id)
-        rq_file = File.join(requests_dir, request_id)
-        CSV.read(rq_file,{col_sep: ' ', encoding: 'UTF-8'}).first.tap { |m| m << File.mtime(rq_file)}
+        rq_file = request_file(request_id)
+        CSV.read(rq_file, {col_sep: ' ', encoding: 'UTF-8'}).first.tap { |m| m << File.mtime(rq_file)}
+      end
+
+      def request_file(request_id)
+        File.join(requests_dir, request_id)
+      end
+
+      def confirm_install(rqid, metadata)
+        return true if options.all
+
+        action = $terminal.ask("\nUser #{metadata[0]} wants to install package #{metadata[2].bold}. (I)nstall, (S)kip, (D)elete?") { |q| q.validate = /[IiDdSs]/ }
+
+        case action.downcase
+          when 'd'
+            File.unlink(request_file(rqid))
+            return false
+          when 's'
+            return false
+          when 'i'
+            return true
+        end
+
+      end
+
+      def actually_install(package)
+        with_spinner do
+          system(sprintf(install_cmd, package))
+        end
+      end
+
+
+      def install_cmd
+        case cw_dist
+          when /^el/
+            "/usr/bin/yum install -y %s >>#{Config.log_root}/depends.log 2>&1"
+          when /^ubuntu/
+            "/usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1"
+        end
+      end
+
+      def cw_dist
+        @cw_dist ||= if !ENV['cw_DIST']
+           warning 'cw_DIST environment variable not set, defaulting to el7'
+           'el7'
+         else
+           ENV['cw_DIST']
+         end
       end
 
     end
