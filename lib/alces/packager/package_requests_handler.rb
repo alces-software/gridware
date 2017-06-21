@@ -59,7 +59,7 @@ module Alces
         self.options = options
       end
 
-      def list()
+      def list
         Alces::Packager::CLI.send(:enable_paging)
         say Terminal::Table.new(title: 'Pending installation requests',
                                 headings: ['User', 'Gridware package', 'Distro package', 'Repo path', 'Date'],
