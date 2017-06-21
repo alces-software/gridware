@@ -66,6 +66,14 @@ module Alces
                                 rows: request_files.map { |rid| metadata(rid) })
       end
 
+      def install
+        if options.all
+          say 'TODO Install all'
+        else
+          say 'TODO Install individual'
+        end
+      end
+
       private
 
       def request_files
