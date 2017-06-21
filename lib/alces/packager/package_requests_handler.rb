@@ -112,7 +112,7 @@ module Alces
       end
 
       def confirm_install(rqid, metadata)
-        return true if options.all
+        return true if options.yes
 
         action = $terminal.ask("\nUser #{metadata[0]} wants to install package #{metadata[2].bold}. (I)nstall, (S)kip, (D)elete?") { |q| q.validate = /[IiDdSs]/ }
 

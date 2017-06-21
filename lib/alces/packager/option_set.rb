@@ -28,7 +28,7 @@ module Alces
       attr_accessor :tree, :ignore_satisfied
       attr_accessor :full, :oneline, :groups, :descriptions, :names
       attr_accessor :disabled, :compile, :explicit_depot
-      attr_accessor :phase, :all
+      attr_accessor :phase
 
       def initialize(options = nil)
         unless options.nil?
@@ -77,7 +77,6 @@ module Alces
           self.compile = options.compile
 
           self.phase = options.phase
-          self.all = options.all
         end
 
         self.compiler ||= :first

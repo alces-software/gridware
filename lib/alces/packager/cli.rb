@@ -274,11 +274,10 @@ Perform a depot operation. Supported operations:
         c.description = <<-EOF
 Perform operations on distribution package installation requests. Supported operations:
 
-  list             List all pending installation requests
-  install [--all]  Install requested packages
+  list     List all pending installation requests
+  install  Install requested packages
         EOF
         c.action HandlerProxy, :package_requests
-        c.option '-a', '--all', 'Install all requested packages without confirmation'
       end
     end
   end
