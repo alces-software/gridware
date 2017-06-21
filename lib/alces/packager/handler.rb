@@ -203,6 +203,8 @@ module Alces
             say "#{'SKIP'.color(:yellow)} (Not updateable, no remote configured)"
           when :outofsync
             say "#{'SKIP'.color(:yellow)} (Out of sync: #{rev})"
+          when :nopermission
+            say "#{'SKIP'.color(:yellow)} (No permission)"
           end
         rescue
           say "#{'FAIL'.color(:red)} (#{$!.message})"
