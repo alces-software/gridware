@@ -115,7 +115,7 @@ module Alces
       end
 
       def have_permission_to_install?(pkg)
-        user_whitelisted || package_whitelisted(pkg) || repo_whitelisted
+        allow_all || user_whitelisted || package_whitelisted(pkg) || repo_whitelisted
       end
 
       def user_whitelisted
@@ -128,6 +128,10 @@ module Alces
 
       def repo_whitelisted
         whitelist[:repos].include?(defn.repo.path)
+      end
+
+      def allow_all
+        whitelist[:allow_all] || false
       end
 
       def make_install_request(pkg)
