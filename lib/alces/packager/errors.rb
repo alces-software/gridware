@@ -45,6 +45,8 @@ module Alces
     end
     class PermissionDeniedError < Alces::Tools::CLI::BadOutcome
     end
+    class ConfigurationError < Alces::Tools::CLI::BadOutcome
+    end
   end
 end
 

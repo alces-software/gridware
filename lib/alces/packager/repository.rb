@@ -53,7 +53,20 @@ module Alces
             if Config.userspace?
               user_cfgfile = File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.config/gridware/gridware.yml")
               user = YAML.load_file(user_cfgfile)
+              check_user_config(h, user)
               h.deep_merge!(user) if File.exists?(user_cfgfile)
+            end
+          end
+        end
+
+        def check_user_config(global, user)
+          global_repos = global[:repo_paths].map { |rp| File.basename(rp) }
+          if user[:repo_paths]
+            user[:repo_paths].each do |urp|
+              urn = File.basename(urp)
+              if global_repos.include?(urn)
+                raise ConfigurationError, "User repo #{urp} conflicts with system-wide repo with the same name (#{urn}). Please correct your configuration in ~/.config/gridware/gridware.yml."
+              end
             end
           end
         end
