@@ -28,6 +28,7 @@ require 'alces/packager/module_tree'
 require 'alces/packager/package'
 require 'alces/packager/errors'
 require 'alces/packager/config'
+require 'alces/packager/dependency_utils'
 require 'memoist'
 require 'find'
 
@@ -669,9 +670,7 @@ EOF
 
       def dependency_script(phase)
         if package.metadata[:dependencies]
-          %(#=Alces-Gridware-Dependencies:2
-cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']}
-sudo -E #{ENV['cw_ROOT']}/bin/alces gridware distro_deps #{package.path} --phase #{phase})
+          DependencyUtils.generate_dependency_script(package.path, phase)
         end
       end
 
