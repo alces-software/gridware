@@ -52,7 +52,7 @@ module Alces
 
             if Config.userspace?
               user_cfgfile = File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.config/gridware/gridware.yml")
-              user = YAML.load_file(user_cfgfile)
+              user = YAML.load_file(user_cfgfile) rescue {}
               check_user_config(h, user)
               h.deep_merge!(user) if File.exists?(user_cfgfile)
             end
