@@ -93,6 +93,7 @@ module Alces
       private
 
       def request_files
+        return [] unless Dir.exists?(requests_dir)
         Dir.entries(requests_dir).reject do |f|
           f[0] == '.'
         end
