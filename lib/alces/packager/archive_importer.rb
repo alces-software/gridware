@@ -132,6 +132,7 @@ module Alces
       private
 
       def handle_failure!(res)
+        msg = 'Installing dependencies failed.'
         err_lines = res.stderr.split("\n")
         max_lines = err_lines.length > 10 ? 10 : err_lines.length
         msg << "\n\n   Extract of script error output:\n   > " << err_lines[-max_lines..-1].reject{|x| !options.verbose && x[0] == '+'}.map(&:strip).join("\n   > ")
