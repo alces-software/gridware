@@ -113,7 +113,7 @@ module Alces
           with_spinner do
             Dir.glob(File.join(Config.dependencies_dir(options.depot),"#{type}-#{name}-#{version}*.sh")).each do |f|
               run('/bin/bash',f) do |r|
-                raise DepotError, "Unable to resolve dependencies for: #{File.basename(f,'.sh')}" unless r.success?
+                handle_failure!(r) if r.fail?
               end
             end
           end
@@ -130,6 +130,14 @@ module Alces
       end
 
       private
+
+      def handle_failure!(res)
+        err_lines = res.stderr.split("\n")
+        max_lines = err_lines.length > 10 ? 10 : err_lines.length
+        msg << "\n\n   Extract of script error output:\n   > " << err_lines[-max_lines..-1].reject{|x| !options.verbose && x[0] == '+'}.map(&:strip).join("\n   > ")
+        raise DepotError, msg
+      end
+
       def import_package(dir)
         # modify depot in modulefiles
         dest_module_dir = File.join(Config.modules_dir(options.depot), package_path)
