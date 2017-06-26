@@ -252,6 +252,7 @@ EOF
 
       private
       def notify_depot(name, state)
+        return if Config.userspace?
         if ENV['cw_GRIDWARE_notify'] == 'true'
           id = File.basename(File.readlink(depot_path(name)))
           run(File.join(ENV['cw_ROOT'],'libexec','share','trigger-depot-event'),
