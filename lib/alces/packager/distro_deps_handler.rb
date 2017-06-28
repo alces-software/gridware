@@ -174,7 +174,7 @@ module Alces
       end
 
       def install_request_command
-        "#{File.join(ENV['cw_ROOT'], 'libexec', 'share', 'distro-deps-notify')} %s %s %s %s"
+        "#{File.join(ENV['cw_ROOT'], 'libexec', 'share', 'distro-deps-notify')} \"%s\" \"%s\" \"%s\" \"%s\""
       end
 
       def stem
