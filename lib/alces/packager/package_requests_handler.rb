@@ -21,6 +21,7 @@
 #==============================================================================
 
 require 'csv'
+require 'yaml'
 
 module Alces
   module Packager
@@ -80,6 +81,7 @@ module Alces
           if confirm
             if actually_install(md[2])
               File.unlink(request_file(rq))
+              notify_user(md)
               say 'Done'.color(:green)
             else
               say 'INSTALL FAILED'.color(:red)
@@ -135,7 +137,6 @@ module Alces
         end
       end
 
-
       def install_cmd
         case cw_dist
           when /^el/
@@ -143,6 +144,32 @@ module Alces
           when /^ubuntu/
             "/usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1"
         end
+      end
+
+      def notify_user(metadata)
+        system(
+            sprintf(
+                user_notify_command,
+                *metadata,
+                user_email(metadata[0])
+            )
+        )
+      end
+
+      def user_email(username)
+        fp = File.expand_path("~#{username}/gridware/etc/gridware.yml")
+        if File.exists?(fp)
+          user_conf = YAML.load_file(fp)
+          if user_conf.has_key?(:user_email)
+            user_conf[:user_email]
+          end
+        end
+
+        ''
+      end
+
+      def user_notify_command
+        "#{File.join(ENV['cw_ROOT'], 'libexec', 'share', 'package-install-notify')} %s %s %s %s %s"
       end
 
       def cw_dist
