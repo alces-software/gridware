@@ -19,7 +19,7 @@
 # For more information on the Alces Clusterware, please visit:
 # https://github.com/alces-software/clusterware
 #==============================================================================
-require 'yaml'
+require 'alces/packager/dependency_utils'
 
 module Alces
   module Packager
@@ -196,15 +196,7 @@ module Alces
       end
 
       def whitelist
-        @whitelist ||= empty_whitelist.merge(whitelist_from_file)
-      end
-
-      def whitelist_from_file
-        YAML.load_file(File.join(Config.gridware, 'etc', 'whitelist.yml')) rescue {}
-      end
-
-      def empty_whitelist
-        { users: [], packages: [], repos: [] }
+        DependencyUtils.whitelist
       end
 
     end

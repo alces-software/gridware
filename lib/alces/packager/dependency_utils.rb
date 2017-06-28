@@ -1,3 +1,5 @@
+require 'yaml'
+
 module Alces
   module Packager
     class DependencyUtils
@@ -8,6 +10,10 @@ module Alces
 sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']} #{ENV['cw_ROOT']}/bin/alces gridware distro_deps #{strip_variant(package_path)} --phase #{phase})
         end
 
+        def whitelist
+          @whitelist ||= empty_whitelist.merge(whitelist_from_file)
+        end
+
         private
 
         def strip_variant(package_path)
@@ -15,6 +21,18 @@ sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']} #{ENV['cw_ROOT']}/
           # remove _ and everything subsequent up until the next /
           # This assumes we always get a full package path including version...
           package_path.gsub(/_[^\/]+(\/[^\/]+)$/, '\1')
+        end
+
+        def whitelist_from_file
+          YAML.load_file(whitelist_file) rescue {}
+        end
+
+        def whitelist_file
+          File.join(Config.gridware, 'etc', 'whitelist.yml')
+        end
+
+        def empty_whitelist
+          { users: [], packages: [], repos: [] }
         end
 
       end
