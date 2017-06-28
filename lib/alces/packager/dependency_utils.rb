@@ -14,6 +14,17 @@ sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']} #{ENV['cw_ROOT']}/
           @whitelist ||= empty_whitelist.merge(whitelist_from_file)
         end
 
+        def whitelist_package(pkg)
+          my_wl = whitelist
+
+          my_wl[:packages] << pkg
+          File.open(whitelist_file, 'w') do |wf|
+            wf.write(my_wl.to_yaml)
+          end
+
+          @whitelist = my_wl
+        end
+
         private
 
         def strip_variant(package_path)

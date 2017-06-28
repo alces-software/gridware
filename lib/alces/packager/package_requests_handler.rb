@@ -20,6 +20,7 @@
 # https://github.com/alces-software/clusterware
 #==============================================================================
 
+require 'alces/packager/dependency_utils'
 require 'csv'
 require 'yaml'
 
@@ -82,6 +83,7 @@ module Alces
             if actually_install(md[2])
               File.unlink(request_file(rq))
               notify_user(md)
+              DependencyUtils.whitelist_package(md[2])
               say 'Done'.color(:green)
             else
               say 'INSTALL FAILED'.color(:red)
