@@ -150,7 +150,7 @@ module Alces
         system(
             sprintf(
                 user_notify_command,
-                *metadata,
+                *metadata[0..-2],
                 user_email(metadata[0])
             )
         )
@@ -161,7 +161,7 @@ module Alces
         if File.exists?(fp)
           user_conf = YAML.load_file(fp)
           if user_conf.has_key?(:user_email)
-            user_conf[:user_email]
+            return user_conf[:user_email]
           end
         end
 
@@ -169,7 +169,7 @@ module Alces
       end
 
       def user_notify_command
-        "#{File.join(ENV['cw_ROOT'], 'libexec', 'share', 'package-install-notify')} %s %s %s %s %s"
+        "#{File.join(ENV['cw_ROOT'], 'libexec', 'share', 'package-install-notify')} \"%s\" \"%s\" \"%s\" \"%s\" \"%s\""
       end
 
       def cw_dist
