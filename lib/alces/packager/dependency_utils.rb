@@ -7,7 +7,7 @@ module Alces
 
         def generate_dependency_script(package_path, phase)
           %(#=Alces-Gridware-Dependencies:2
-sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']} #{ENV['cw_ROOT']}/bin/alces gridware distro_deps #{strip_variant(package_path)} --phase #{phase})
+sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']} #{ENV['cw_ROOT']}/bin/alces gridware dependencies #{strip_variant(package_path)} --phase #{phase})
         end
 
         def whitelist
