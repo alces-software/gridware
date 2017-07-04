@@ -31,12 +31,29 @@ module Alces
         use_default_params: false
       }
 
+      USERSPACE_CONFIG = {
+          log_root: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/log"),
+          archives_dir: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/archives"),
+          buildroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/src"),
+          depotroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/gridware"),
+          default_depot: 'personal'
+      }
+
       class << self
         def config
           @config ||= DEFAULT_CONFIG.dup.tap do |h|
             cfgfile = Alces::Tools::Config.find("gridware", false)
             h.merge!(YAML.load_file(cfgfile)) unless cfgfile.nil?
+
+            if userspace?
+              h.merge!(USERSPACE_CONFIG)
+            end
+
           end
+        end
+
+        def userspace?
+          ENV.has_key?('cw_GRIDWARE_userspace')
         end
 
         def packages_dir(depot)
@@ -53,6 +70,14 @@ module Alces
 
         def dbroot(depot)
           File.expand_path(File.join(depot_path(depot),'etc'))
+        end
+
+        def default_depot
+          if config.has_key?(:default_depot)
+            config[:default_depot]
+          else
+            'local'
+          end
         end
 
         def method_missing(s,*a,&b)

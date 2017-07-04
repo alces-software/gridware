@@ -240,7 +240,7 @@ Perform a depot operation. Supported operations:
         c.option '--tree', 'Display dependency tree for package'
         c.option '--ignore-satisfied', 'Only display unsatisfied dependencies'
       end
-      set_aliases(:requires, extra: :reqs)
+      set_aliases(:requires, extra: :reqs, min: 4)
 
       command :export do |c|
         c.syntax = 'alces gridware export <package path>'
@@ -260,6 +260,27 @@ Perform a depot operation. Supported operations:
         c.action HandlerProxy, :import
       end
       set_aliases(:import, min: 2)
+
+      command :dependencies do |c|
+        c.syntax = 'alces gridware dependencies <distro_pkg> [<distro_pkg> [...]]'
+        c.description = 'Install dependencies from the distribution\'s package manager'
+        c.action HandlerProxy, :distro_deps
+        c.option '-p', '--phase STRING', String, 'Phase to install dependencies for (e.g. build, runtime)'
+      end
+      set_aliases(:dependencies, min: 4, extra: :deps)
+
+      command :requests do |c|
+        c.syntax = 'alces gridware requests <operation>'
+        c.summary = 'Perform operations on distribution package installation requests'
+        c.description = <<-EOF
+Perform operations on distribution package installation requests. Supported operations:
+
+  list     List all pending installation requests
+  install  Install requested packages
+        EOF
+        c.action HandlerProxy, :package_requests
+      end
+      set_aliases(:requests, min: 4, extra: :rq)
     end
   end
 end

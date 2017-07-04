@@ -28,6 +28,7 @@ require 'alces/packager/module_tree'
 require 'alces/packager/package'
 require 'alces/packager/errors'
 require 'alces/packager/config'
+require 'alces/packager/dependency_utils'
 require 'memoist'
 require 'find'
 
@@ -669,16 +670,7 @@ EOF
 
       def dependency_script(phase)
         if package.metadata[:dependencies]
-          case ENV['cw_DIST']
-          when /^el/
-            generate_dependency_script(phase, 'el', 'rpm -q %s',
-                                       "sudo /usr/bin/yum install -y %s >>#{Config.log_root}/depends.log 2>&1",
-                                       'env -i yum info %s >/dev/null 2>/dev/null')
-          when /^ubuntu/
-            generate_dependency_script(phase, 'ubuntu', 'dpkg -l %s',
-                                       "sudo /usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1",
-                                       'apt-cache show %s >/dev/null 2>/dev/null')
-          end
+          DependencyUtils.generate_dependency_script(package.path, phase)
         end
       end
 
@@ -704,9 +696,8 @@ EOF
 
       private
       def correct_permissions
-        FileUtils.chown_R(nil, 'gridware', dest_dir)
         FileUtils.chmod_R("ug+w,a+r", dest_dir, force: true)
-        FileUtils.chmod("g+xs,a+x", directories_within(dest_dir))
+        FileUtils.chmod("u+xs,a+x", directories_within(dest_dir))
       end
 
       def directories_within(base)
@@ -715,59 +706,6 @@ EOF
           Find.find(base) do |f|
             a << f if File.directory?(f) && !(dots.include?(File.basename(f)))
           end
-        end
-      end
-
-      def generate_dependency_script(phase, stem, check_cmd, install_cmd, available_cmd)
-        deps_hashes = [].tap do |a|
-          if package.metadata[:dependencies][phase]
-            a << package.metadata[:dependencies][phase]
-            if phase == :build && package.metadata[:dependencies].key?(:runtime)
-              a << package.metadata[:dependencies][:runtime]
-            end
-          else
-            a << package.metadata[:dependencies]
-          end
-        end
-        deps = deps_hashes.map do |deps_hash|
-          [*deps_hash[stem]] + [*deps_hash[ENV['cw_DIST']]]
-        end.flatten
-        unless deps.empty?
-          s = %(deps=()\n)
-          deps.each do |dep|
-            s << %(if ! #{sprintf(check_cmd,dep)} >/dev/null; then\n  deps+=(#{dep})\nfi\n)
-          end
-          s << %(
-if [ "${#deps[@]}" -gt 0 ]; then
-  n=0
-  for a in "${deps[@]}"; do
-    n=$(($n+1))
-    echo -n "Installing distro dependency ($n/${#deps[@]}): ${a} ..."
-    c=0
-    while ! #{sprintf(available_cmd,'"${a}"')}; do
-      c=$(($c+1))
-      if [ $c -gt 5 ]; then
-        available_failed=true
-        break
-      fi
-    done
-    if [ -z "$available_failed" ]; then
-      c=0
-      while ! #{sprintf(install_cmd,'"${a}"')}; do
-        c=$(($c+1))
-        if [ $c -gt 5 ]; then
-          echo ' FAILED'
-          exit 1
-        fi
-      done
-      echo ' OK'
-    else
-      echo ' NOT FOUND'
-      exit 1
-    fi
-  done
-fi)
-          s.tap { i("Dependencies script"){s} }
         end
       end
 

@@ -43,7 +43,7 @@ module Alces
             raise ModulefileError, "Unable to gain module directory lock (stale lock at #{lock_dir}?)"
           end
           begin
-            FileUtils.mkdir(lock_dir)
+            FileUtils.mkdir_p(lock_dir)
             block.call
           ensure
             FileUtils.rmdir(lock_dir)

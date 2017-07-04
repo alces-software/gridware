@@ -66,7 +66,6 @@ module Alces
           output.close
           stat = File.stat(f)
           File.chmod(stat.mode, out_file)
-          File.chown(stat.uid, stat.gid, out_file)
           File.rename(out_file, f)
         end
       end
