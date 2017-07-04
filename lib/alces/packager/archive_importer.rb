@@ -22,6 +22,7 @@
 require 'alces/tools/execution'
 require 'alces/packager/package'
 require 'alces/packager/errors'
+require 'alces/packager/dependency_utils'
 require 'alces/packager/import_export_utils'
 require 'find'
 
@@ -112,7 +113,7 @@ module Alces
           with_spinner do
             Dir.glob(File.join(Config.dependencies_dir(options.depot),"#{type}-#{name}-#{version}*.sh")).each do |f|
               run('/bin/bash',f) do |r|
-                raise DepotError, "Unable to resolve dependencies for: #{File.basename(f,'.sh')}" unless r.success?
+                handle_failure!(r) if r.fail?
               end
             end
           end
@@ -129,6 +130,15 @@ module Alces
       end
 
       private
+
+      def handle_failure!(res)
+        msg = 'Installing dependencies failed.'
+        err_lines = res.stderr.split("\n")
+        max_lines = err_lines.length > 10 ? 10 : err_lines.length
+        msg << "\n\n   Extract of script error output:\n   > " << err_lines[-max_lines..-1].reject{|x| !options.verbose && x[0] == '+'}.map(&:strip).join("\n   > ")
+        raise DepotError, msg
+      end
+
       def import_package(dir)
         # modify depot in modulefiles
         dest_module_dir = File.join(Config.modules_dir(options.depot), package_path)
@@ -204,7 +214,7 @@ module Alces
               FileUtils.mkdir_p(dest_pkg_dir)
               FileUtils.mv(pkg_dir, dest_pkg_dir)
               if File.exists?(depends_file)
-                fixup_depends_file(depends_file)
+                upgrade_depends_file(depends_file)
                 FileUtils.mkdir_p(dest_depends_dir)
                 FileUtils.mv(depends_file, dest_depends_dir)
               end
@@ -223,24 +233,6 @@ module Alces
           else
             say 'OK'.color(:green)
           end
-
-          doing 'Permissions'
-          with_spinner do
-            # fix permissions on:
-            #   - modulefile
-            #   - depends file
-            #   - package tree
-            tgt_module_file = File.join(dest_module_dir, tagging[:tag])
-            tgt_depends_file = File.join(dest_depends_dir, "#{[type, name, version, tagging[:tag]].join('-')}.sh")
-            tgt_pkg_dir = File.join(dest_pkg_dir, tagging[:tag])
-
-            FileUtils.chown(nil, 'gridware', tgt_depends_file) if File.exists?(tgt_depends_file)
-            FileUtils.chown(nil, 'gridware', tgt_module_file)
-            FileUtils.chown_R(nil, 'gridware', tgt_pkg_dir)
-            FileUtils.chmod_R("g+w", tgt_pkg_dir, force: true)
-            FileUtils.chmod("g+xs", directories_within(tgt_pkg_dir))
-          end
-          say 'OK'.color(:green)
         end
       end
 
@@ -292,7 +284,7 @@ module Alces
             FileUtils.mkdir_p(dest_pkg_dir)
             FileUtils.mv(pkg_dir, dest_pkg_dir)
             if File.exists?(depends_file)
-              fixup_depends_file(depends_file)
+              upgrade_depends_file(depends_file)
               FileUtils.mkdir_p(dest_depends_dir)
               FileUtils.mv(depends_file, dest_depends_dir)
             end
@@ -304,26 +296,6 @@ module Alces
         else
           say 'OK'.color(:green)
         end
-
-        doing 'Permissions'
-        with_spinner do
-          # fix permissions on:
-          #   - modulefiles
-          #   - depends file
-          #   - package tree
-          tgt_compiler_module_file = File.join(dest_compiler_module_dir, version)
-          tgt_lib_module_file = File.join(dest_lib_module_dir, version)
-          tgt_depends_file = File.join(dest_depends_dir, "#{['compilers', name, version].join('-')}.sh")
-          tgt_pkg_dir = File.join(dest_pkg_dir, version)
-
-          FileUtils.chown(nil, 'gridware', tgt_depends_file) if File.exists?(tgt_depends_file)
-          FileUtils.chown(nil, 'gridware', tgt_compiler_module_file)
-          FileUtils.chown(nil, 'gridware', tgt_lib_module_file)
-          FileUtils.chown_R(nil, 'gridware', tgt_pkg_dir)
-          FileUtils.chmod_R("g+w", tgt_pkg_dir, force: true)
-          FileUtils.chmod("g+xs", directories_within(tgt_pkg_dir))
-        end
-        say 'OK'.color(:green)
       end
 
       def load_metadata(dir)
@@ -351,14 +323,12 @@ module Alces
         end
       end
 
-      # XXX - bit of a hack!
-      def fixup_depends_file(depends_file)
+      def upgrade_depends_file(depends_file)
         s = File.read(depends_file)
-        s.gsub!('if yum info', 'if env -i yum info')
-        s.gsub!('if ! yum install', 'if ! sudo /usr/bin/yum install')
-        s.gsub!('if ! sudo /usr/bin/yum install -y --quiet "${a}"',
-                %(if ! sudo /usr/bin/yum install -y "${a}" >>#{Config.log_root}/depends.log 2>&1))
-        File.write(depends_file,s)
+        if !s.start_with?('#=Alces-Gridware-Dependencies:2')
+          # We have a legacy dependency script; replace it with a new one
+          File.write(depends_file, DependencyUtils.generate_dependency_script(package_path, :runtime))
+        end
       end
 
       def text_file?(file)

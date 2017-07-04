@@ -83,6 +83,7 @@ module Alces
       end
 
       def update!
+        return [:nopermission, nil] unless File.stat(path).writable?
         if metadata.key?(:source)
           case r = Alces.git.sync(metadata_path, metadata[:source])
           when /^Branch master set up/

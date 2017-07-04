@@ -43,6 +43,10 @@ module Alces
     end
     class ModulefileWarning < Alces::Tools::CLI::BadOutcome
     end
+    class PermissionDeniedError < Alces::Tools::CLI::BadOutcome
+    end
+    class ConfigurationError < Alces::Tools::CLI::BadOutcome
+    end
   end
 end
 
