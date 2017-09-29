@@ -325,7 +325,7 @@ module Alces
 
       def upgrade_depends_file(depends_file)
         s = File.read(depends_file)
-        if !s.start_with?('#=Alces-Gridware-Dependencies:2')
+        if !s.include?('#=Alces-Gridware-Dependencies:2')
           # We have a legacy dependency script; replace it with a new one
           File.write(depends_file, DependencyUtils.generate_dependency_script(package_path, :runtime))
         end
