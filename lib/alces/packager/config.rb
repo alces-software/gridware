@@ -53,7 +53,7 @@ module Alces
         end
 
         def userspace?
-          ENV.has_key?('cw_GRIDWARE_userspace')
+          ENV.has_key?('cw_GRIDWARE_userspace') && ENV['cw_GRIDWARE_userspace'] != ''
         end
 
         def packages_dir(depot)
