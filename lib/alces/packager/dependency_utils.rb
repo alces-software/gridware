@@ -6,8 +6,12 @@ module Alces
       class << self
 
         def generate_dependency_script(package_path, phase)
-          %(#=Alces-Gridware-Dependencies:2
-sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']} #{ENV['cw_ROOT']}/bin/alces gridware dependencies #{strip_variant(package_path)} --phase #{phase})
+          %(#!/bin/bash
+#=Alces-Gridware-Dependencies:2
+if [ $UID -ne 0 ]; then
+  SUDO='sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']}'
+fi
+${SUDO} #{ENV['cw_ROOT']}/bin/alces gridware dependencies #{strip_variant(package_path)} --phase #{phase})
         end
 
         def whitelist
