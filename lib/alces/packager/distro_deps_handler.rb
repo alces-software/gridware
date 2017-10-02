@@ -54,9 +54,9 @@ module Alces
       def install_deps
         packages_without_permission = []
         required_distro_packages.each do |pkg|
-          doing pkg
+          maybe_doing pkg
           if installed?(pkg)
-            say 'already installed'.color(:green)
+            maybe_say 'already installed'.color(:green)
           elsif available?(pkg)
             if have_permission_to_install?(pkg)
               installed_ok = false
@@ -64,7 +64,7 @@ module Alces
                 installed_ok = system(sprintf(install_cmd, pkg))
               end
               if installed_ok
-                say 'OK'.color(:green)
+                maybe_say 'OK'.color(:green)
               else
                 say 'FAILED'.color(:red)
               end
@@ -197,6 +197,14 @@ module Alces
 
       def whitelist
         DependencyUtils.whitelist
+      end
+
+      def maybe_doing(text)
+        doing(text) unless self.options.non_interactive
+      end
+
+      def maybe_say(text)
+        say(text) unless self.options.non_interactive
       end
 
     end
