@@ -119,7 +119,7 @@ module Alces
       def confirm_install(rqid, metadata)
         return true if options.yes
 
-        action = $terminal.ask("\nUser #{metadata[0]} wants to install package #{metadata[2].bold}. (I)nstall, (S)kip, (D)elete?") { |q| q.validate = /[IiDdSs]/ }
+        action = $terminal.ask("\nUser #{metadata[0]} wants to install package #{metadata[2].bold}. (I)nstall, install (A)ll, (S)kip, (D)elete?") { |q| q.validate = /[IiDdSsAa]/ }
 
         case action.downcase
           when 'd'
@@ -129,6 +129,11 @@ module Alces
             return false
           when 'i'
             return true
+          when 'a'
+            options.yes = true
+            return true
+          else
+            return false
         end
 
       end
