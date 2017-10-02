@@ -31,14 +31,6 @@ module Alces
         use_default_params: false
       }
 
-      USERSPACE_CONFIG = {
-          log_root: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/log"),
-          archives_dir: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/archives"),
-          buildroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/src"),
-          depotroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/gridware"),
-          default_depot: 'personal'
-      }
-
       class << self
         def config
           @config ||= DEFAULT_CONFIG.dup.tap do |h|
@@ -46,7 +38,15 @@ module Alces
             h.merge!(YAML.load_file(cfgfile)) unless cfgfile.nil?
 
             if userspace?
-              h.merge!(USERSPACE_CONFIG)
+              h.merge!(
+                  {
+                      log_root: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/log"),
+                      archives_dir: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/archives"),
+                      buildroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/.cache/gridware/cache/src"),
+                      depotroot: File.expand_path("~#{ENV['cw_GRIDWARE_userspace']}/gridware"),
+                      default_depot: 'personal'
+                  }
+              )
             end
 
           end
