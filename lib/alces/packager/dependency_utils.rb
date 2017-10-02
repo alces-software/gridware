@@ -21,6 +21,8 @@ ${SUDO} #{ENV['cw_ROOT']}/bin/alces gridware dependencies #{strip_variant(packag
         def whitelist_package(pkg)
           my_wl = whitelist
 
+          return whitelist if my_wl[:packages].include?(pkg)
+
           my_wl[:packages] << pkg
           File.open(whitelist_file, 'w') do |wf|
             wf.write(my_wl.to_yaml)
