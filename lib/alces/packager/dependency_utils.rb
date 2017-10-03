@@ -11,7 +11,7 @@ module Alces
 if [ $UID -ne 0 ]; then
   SUDO='sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']}'
 fi
-${SUDO} #{ENV['cw_ROOT']}/bin/alces gridware dependencies #{strip_variant(package_path)} --phase #{phase}) --non-interactive
+${SUDO} #{ENV['cw_ROOT']}/bin/alces gridware dependencies #{strip_variant(package_path)} --phase #{phase} --non-interactive)
         end
 
         def whitelist
