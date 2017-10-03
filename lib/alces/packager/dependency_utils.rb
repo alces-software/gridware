@@ -3,7 +3,10 @@ require 'yaml'
 module Alces
   module Packager
     class DependencyUtils
+
       class << self
+
+        delegate :warning, :to => IoHandler
 
         def generate_dependency_script(package, phase)
           %(#!/bin/bash
@@ -20,7 +23,7 @@ case "${cw_VERSION:-1.0.0}" in
     esac
 
 if [ $UID -ne 0 ]; then
-  SUDO='sudo -E cw_GRIDWARE_userspace=#{ENV['cw_GRIDWARE_userspace']}'
+  SUDO='sudo -E'
 fi
 ${SUDO} #{ENV['cw_ROOT']}/bin/alces gridware dependencies #{strip_variant(package.path)} --phase #{phase} --non-interactive)
         end

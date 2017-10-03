@@ -119,7 +119,7 @@ module Alces
       end
 
       def user_whitelisted
-        (Process.uid == 0 && !ENV.has_key?('SUDO_USER')) || whitelist[:users].include?(ENV['cw_GRIDWARE_userspace'])
+        (Process.uid == 0 && !ENV.has_key?('SUDO_USER')) || whitelist[:users].include?(ENV['SUDO_USER'])
       end
 
       def package_whitelisted(pkg)
@@ -138,7 +138,7 @@ module Alces
         system(
           sprintf(
             install_request_command,
-            ENV['cw_GRIDWARE_userspace'],
+            ENV['SUDO_USER'],
             defn.name,
             pkg,
             defn.repo.path
