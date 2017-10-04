@@ -38,10 +38,11 @@ module Alces
       include Alces::Tools::Execution
       include Alces::Packager::ImportExportUtils
 
-      attr_accessor :archive_path, :options
+      attr_accessor :archive_path, :options, :package
       delegate :say, :with_spinner, :doing, :title, :colored_path, :to => IoHandler
 
-      def initialize(archive_path, options)
+      def initialize(package, archive_path, options)
+        self.package = package
         self.archive_path = archive_path
         self.options = options
       end
@@ -327,7 +328,7 @@ module Alces
         s = File.read(depends_file)
         if !s.include?('#=Alces-Gridware-Dependencies:2')
           # We have a legacy dependency script; replace it with a new one
-          File.write(depends_file, DependencyUtils.generate_dependency_script(package_path, :runtime))
+          File.write(depends_file, DependencyUtils.generate_dependency_script(package, :runtime))
         end
       end
 
