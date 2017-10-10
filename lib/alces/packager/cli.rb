@@ -262,8 +262,8 @@ Perform a depot operation. Supported operations:
       set_aliases(:import, min: 2)
 
       command :dependencies do |c|
-        c.syntax = 'alces gridware dependencies <distro_pkg> [<distro_pkg> [...]]'
-        c.description = 'Install dependencies from the distribution\'s package manager'
+        c.syntax = 'alces gridware dependencies <package> [<package> [...]]'
+        c.description = 'Install dependencies from the distribution\'s package manager for Gridware packages'
         c.action HandlerProxy, :distro_deps
         c.option '-p', '--phase STRING', String, 'Phase to install dependencies for (e.g. build, runtime)'
       end

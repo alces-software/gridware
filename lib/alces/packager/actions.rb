@@ -670,7 +670,7 @@ EOF
 
       def dependency_script(phase)
         if package.metadata[:dependencies]
-          DependencyUtils.generate_dependency_script(package.path, phase)
+          DependencyUtils.generate_dependency_script(package, phase)
         end
       end
 
