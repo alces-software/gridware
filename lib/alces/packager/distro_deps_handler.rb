@@ -54,17 +54,17 @@ module Alces
       def install_deps
         packages_without_permission = []
         required_distro_packages.each do |pkg|
-          doing pkg
+          maybe_doing pkg
           if installed?(pkg)
-            say 'already installed'.color(:green)
+            maybe_say 'already installed'.color(:green)
           elsif available?(pkg)
             if have_permission_to_install?(pkg)
               installed_ok = false
               with_spinner do
-                installed_ok = system(sprintf(install_cmd, pkg))
+                installed_ok = system(sprintf(DependencyUtils.install_command, pkg))
               end
               if installed_ok
-                say 'OK'.color(:green)
+                maybe_say 'OK'.color(:green)
               else
                 say 'FAILED'.color(:red)
               end
@@ -100,18 +100,18 @@ module Alces
         end
 
         deps = deps_hashes.map do |deps_hash|
-          [*deps_hash[stem]] + [*deps_hash[ENV['cw_DIST']]]
+          [*deps_hash[DependencyUtils.stem]] + [*deps_hash[ENV['cw_DIST']]]
         end.flatten
 
         return deps
       end
 
       def installed?(pkg)
-        return system(sprintf(check_command, pkg))
+        return system(sprintf(DependencyUtils.check_command, pkg))
       end
 
       def available?(pkg)
-        return system(sprintf(available_command, pkg))
+        return system(sprintf(DependencyUtils.available_command, pkg))
       end
 
       def have_permission_to_install?(pkg)
@@ -119,7 +119,7 @@ module Alces
       end
 
       def user_whitelisted
-        (Process.uid == 0 && !ENV.has_key?('SUDO_USER')) || whitelist[:users].include?(ENV['cw_GRIDWARE_userspace'])
+        (Process.uid == 0 && !ENV.has_key?('SUDO_USER')) || whitelist[:users].include?(ENV['SUDO_USER'])
       end
 
       def package_whitelisted(pkg)
@@ -138,7 +138,7 @@ module Alces
         system(
           sprintf(
             install_request_command,
-            ENV['cw_GRIDWARE_userspace'],
+            ENV['SUDO_USER'],
             defn.name,
             pkg,
             defn.repo.path
@@ -146,57 +146,20 @@ module Alces
         )
       end
 
-      def install_cmd
-        case cw_dist
-          when /^el/
-            "/usr/bin/yum install -y %s >>#{Config.log_root}/depends.log 2>&1"
-          when /^ubuntu/
-            "/usr/bin/apt-get install -y %s >>#{Config.log_root}/depends.log 2>&1"
-        end
-      end
-
-      def check_command
-        case cw_dist
-          when /^el/
-            'rpm -q %s >/dev/null 2>/dev/null'
-          when /^ubuntu/
-            'dpkg -l %s >/dev/null 2>/dev/null'
-        end
-      end
-
-      def available_command
-        case cw_dist
-          when /^el/
-            'env -i yum info %s >/dev/null 2>/dev/null'
-          when /^ubuntu/
-            'apt-cache show %s >/dev/null 2>/dev/null'
-        end
-      end
-
       def install_request_command
         "#{File.join(ENV['cw_ROOT'], 'libexec', 'share', 'distro-deps-notify')} \"%s\" \"%s\" \"%s\" \"%s\""
       end
 
-      def stem
-        case cw_dist
-          when /^el/
-            'el'
-          when /^ubuntu/
-            'ubuntu'
-        end
-      end
-
-      def cw_dist
-        @cw_dist ||= if !ENV['cw_DIST']
-            warning 'cw_DIST environment variable not set, defaulting to el7'
-          'el7'
-        else
-          ENV['cw_DIST']
-        end
-      end
-
       def whitelist
         DependencyUtils.whitelist
+      end
+
+      def maybe_doing(text)
+        doing(text) unless self.options.non_interactive
+      end
+
+      def maybe_say(text)
+        say(text) unless self.options.non_interactive
       end
 
     end
