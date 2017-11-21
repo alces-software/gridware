@@ -259,7 +259,10 @@ EOF
             # download and import
             import_opts = OptionSet.new(options)
             import_opts.depot = target_depot.name
-            ArchiveImporter.import(archive_path_for(depot.region_aware_root,pkg), import_opts)
+
+            definition = Repository.find_definitions(pkg).first
+
+            ArchiveImporter.import(definition, archive_path_for(depot.region_aware_root, pkg), import_opts)
             say "\n"
           end
           build_targets.each do |pkg|

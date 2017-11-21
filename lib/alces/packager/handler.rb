@@ -144,7 +144,7 @@ module Alces
       def import
         with_depot do
           raise MissingArgumentError, 'Please supply path to archive' if package_path.nil?
-          ArchiveImporter.import(package_path, options)
+          ArchiveImporter.import(nil, package_path, options)
         end
       end
 
