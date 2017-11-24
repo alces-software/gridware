@@ -64,7 +64,7 @@ module Alces
           super
         end
       rescue Alces::Tools::CLI::BadOutcome
-        say "#{'ERROR'.underline.color(:red)}: #{$!.message}"
+        STDERR.puts "#{'ERROR'.underline.color(:red)}: #{$!.message}"
         exit(1)
       rescue Interrupt
         say "\n#{'WARNING'.underline.color(:yellow)}: Cancelled by user"
