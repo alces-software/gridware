@@ -49,6 +49,9 @@ module Alces
               )
             end
 
+            if ENV['cw_FORGE_GRIDWARE_TEMP_REPO']
+              h[:repo_paths] = (h[:repo_paths] || []) << ENV['cw_FORGE_GRIDWARE_TEMP_REPO']
+            end
           end
         end
 
