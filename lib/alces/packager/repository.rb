@@ -56,6 +56,10 @@ module Alces
               check_user_config(h, user)
               h.deep_merge!(user) if File.exists?(user_cfgfile)
             end
+
+            if ENV['cw_FORGE_GRIDWARE_TEMP_REPO']
+              h[:repo_paths] = (h[:repo_paths] || []) << ENV['cw_FORGE_GRIDWARE_TEMP_REPO']
+            end
           end
         end
 
