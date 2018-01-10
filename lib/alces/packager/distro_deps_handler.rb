@@ -64,6 +64,7 @@ module Alces
                 installed_ok = system(sprintf(DependencyUtils.install_command, pkg))
               end
               if installed_ok
+                DependencyUtils.whitelist_package(pkg) if user_is_root
                 maybe_say 'OK'.color(:green)
               else
                 say 'FAILED'.color(:red)
@@ -119,7 +120,11 @@ module Alces
       end
 
       def user_whitelisted
-        (Process.uid == 0 && !ENV.has_key?('SUDO_USER')) || whitelist[:users].include?(ENV['SUDO_USER'])
+         user_is_root || whitelist[:users].include?(ENV['SUDO_USER'])
+      end
+
+      def user_is_root
+        Process.uid == 0 && !ENV.has_key?('SUDO_USER')
       end
 
       def package_whitelisted(pkg)
