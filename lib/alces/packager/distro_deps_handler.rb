@@ -57,6 +57,7 @@ module Alces
           maybe_doing pkg
           if installed?(pkg)
             maybe_say 'already installed'.color(:green)
+            DependencyUtils.whitelist_package(pkg) if user_is_root
           elsif available?(pkg)
             if have_permission_to_install?(pkg)
               installed_ok = false
