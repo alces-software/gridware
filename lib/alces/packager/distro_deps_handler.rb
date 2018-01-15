@@ -90,9 +90,9 @@ module Alces
       def required_distro_packages
         deps_hashes = [].tap do |a|
           if defn.metadata[:dependencies]
-            if defn.metadata[:dependencies][options.phase]
-              a << defn.metadata[:dependencies][options.phase]
-              if options.phase == :build && defn.metadata[:dependencies].key?(:runtime)
+            if defn.metadata[:dependencies][options.phase.to_sym]
+              a << defn.metadata[:dependencies][options.phase.to_sym]
+              if options.phase.to_sym == :build && defn.metadata[:dependencies].key?(:runtime)
                 a << defn.metadata[:dependencies][:runtime]
               end
             else
