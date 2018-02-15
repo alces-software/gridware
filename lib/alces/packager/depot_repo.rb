@@ -86,24 +86,14 @@ module Alces
         return [:nopermission, nil] unless File.stat(path).writable?
         if metadata.key?(:source)
           case r = Alces.git.sync(metadata_path, metadata[:source])
-          when /^Branch master set up/
+          when :created, :updated
             set_last_update
             # force reload of depot metadata if needed
             @depot_metadata = nil
             [:ok, head_revision]
-          when /^Updating (\S*)\.\.(\S*)/
-            set_last_update
-            cur = $1
-            tgt = $2
-            head_rev = head_revision
-            if head_rev != tgt
-              [:outofsync, head_rev]
-            else
-              # force reload of packages if needed
-              @depot_metadata = nil
-              [:ok, tgt]
-            end
-          when /^Already up-to-date./
+          when :outofsync
+            [:outofsync, head_revision]
+          when :uptodate
             set_last_update
             [:uptodate, head_revision]
           else
