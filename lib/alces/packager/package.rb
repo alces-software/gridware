@@ -95,7 +95,7 @@ module Alces
                           end
                         end
                       else
-                        raise 'Invalid requirement operator: #{op}'
+                        raise "Invalid requirement operator: #{op}"
                       end
             packages.sort do |a,b|
               begin

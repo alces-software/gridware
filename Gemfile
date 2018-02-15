@@ -25,7 +25,7 @@ source 'http://rubygems.org'
 gem 'alces-tools', '>= 0.13.0'
 gem 'commander'
 gem 'terminal-table'
-gem 'grit'
+gem 'rugged', git: 'git://github.com/libgit2/rugged.git', submodules: true
 gem 'dm-rest-adapter', '1.3.0.alces0'
 gem 'rubytree'
 gem 'dm-sqlite-adapter', '>= 1.2.0'
