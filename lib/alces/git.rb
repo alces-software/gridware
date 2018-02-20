@@ -30,7 +30,7 @@ module Alces
       end
 
       def sync(path, url, branch = 'master')
-        if File.writable?(path)
+        if File.writable?(path) || (!File.exist?(path) && File.writable?(File.dirname(path)))
           if File.directory?(File.join(path,'.git'))
             repo = Rugged::Repository.new(path)
           else
