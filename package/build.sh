@@ -22,7 +22,7 @@ git archive HEAD | tar -x -C "${temp_dir}"/data/opt/gridware
 popd > /dev/null
 
 pushd "${temp_dir}"/data/opt/gridware > /dev/null
-bundle install --local --without="development test" --path=vendor
+bundle install --without="development test" --path=vendor
 
 rm -rf Rakefile vendor/cache bin .gitignore README.md
 rm -rf vendor/ruby/2.2.0/bundler/gems/rugged-*/{test,ext,.git,vendor/libgit2} \
