@@ -325,14 +325,11 @@ module Alces
       end
 
       def upgrade_depends_file(depends_file)
-        s = File.read(depends_file)
-        if !s.include?('#=Alces-Gridware-Dependencies:2')
-          if package
-            # We have a legacy dependency script; replace it with a new one
-            File.write(depends_file, DependencyUtils.generate_dependency_script(package, :runtime))
-          else
-            say "#{'WARN'.color(:yellow)} No definition supplied, unable to upgrade dependencies file"
-          end
+        if package
+          # Consider all exported depends files as broken and write new ones on import.
+          File.write(depends_file, DependencyUtils.generate_dependency_script(package, :runtime))
+        else
+          say "#{'WARN'.color(:yellow)} No definition supplied, unable to generate dependencies file"
         end
       end
 
