@@ -185,7 +185,7 @@ EOF
             opts.binary = options.binary || options.binary_depends
             opts.args = [dep.path].tap do |a|
               (build_arg_hash[:params] || '').split(',').each do |p|
-                a << "#{p}=#{params(false)[p.to_sym]}"
+                a << "#{p}=#{params(false,dep)[p.to_sym]}"
               end
             end
             DefinitionHandler.install(dep, opts)
