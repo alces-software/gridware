@@ -164,7 +164,7 @@ module Alces
               say "#{'NOTICE'.color(:yellow)}: #{options.compile ? 'building' : 'importing'} requirements"
               say "-" * 80
               unresolved.each do |req|
-                if req =~ /(\S*)_(\S*)( .*)?/
+                if req =~ /(\S*)_([^\/\s]*)(.*)?/
                   req = "#{$1}#{$3}"
                   variant = $2
                 else
