@@ -17,6 +17,8 @@ mkdir -p "${temp_dir}"/data/opt/gridware
 
 echo "Creating Forge package of Gridware from git rev $(git rev-parse --short HEAD)"
 
+yum install -y gcc-c++ gmp-devel sqlite-devel cmake libcurl-devel openssl-devel
+
 pushd .. > /dev/null
 git archive HEAD | tar -x -C "${temp_dir}"/data/opt/gridware
 popd > /dev/null
