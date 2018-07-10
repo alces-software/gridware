@@ -1,18 +1,26 @@
 GIT
   remote: git://github.com/libgit2/rugged.git
-  revision: ebd4e5696d6ebd50355c46648c2a82e976c9881b
+  revision: f8172c2a177a6795553f38f01248daff923f4264
   submodules: true
   specs:
-    rugged (0.26.0)
+    rugged (0.27.2)
+
+GIT
+  remote: https://github.com/alces-software/RubyTree
+  revision: e8cadbefa66055abfedc20f8c1bcfad85333263d
+  specs:
+    rubytree (0.9.7)
+      json (>= 1.8, < 3.0)
 
 GEM
   remote: http://rubygems.org/
+  remote: http://gems.alces-software.com/
   specs:
     addressable (2.3.8)
     alces-tools (0.13.0)
     bourne (1.6.0)
       mocha (~> 1.1)
-    commander (4.3.5)
+    commander (4.4.5)
       highline (~> 1.7.2)
     data_objects (0.10.16)
       addressable (~> 2.1)
@@ -45,10 +53,10 @@ GEM
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
     fastercsv (1.5.5)
-    highline (1.7.3)
+    highline (1.7.10)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
-    json (1.8.3)
+    json (1.8.6)
     json_pure (1.8.2)
     memoist (0.12.0)
     metaclass (0.0.4)
@@ -62,10 +70,6 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    rubytree (0.9.6)
-      json (~> 1.8)
-      structured_warnings (~> 0.2)
-    structured_warnings (0.2.0)
     terminal-table (1.5.2)
     unf (0.1.4)
       unf_ext
@@ -85,9 +89,9 @@ DEPENDENCIES
   memoist
   minitest
   mocha
-  rubytree
+  rubytree!
   rugged!
   terminal-table
 
 BUNDLED WITH
-   1.13.7
+   1.16.2
