@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/libgit2/rugged.git
-  revision: f8172c2a177a6795553f38f01248daff923f4264
-  submodules: true
-  specs:
-    rugged (0.27.2)
-
-GIT
   remote: https://github.com/alces-software/RubyTree
   revision: e8cadbefa66055abfedc20f8c1bcfad85333263d
   specs:
@@ -16,13 +9,14 @@ GEM
   remote: http://rubygems.org/
   remote: http://gems.alces-software.com/
   specs:
-    addressable (2.3.8)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     alces-tools (0.13.0)
     bourne (1.6.0)
       mocha (~> 1.1)
     commander (4.4.5)
       highline (~> 1.7.2)
-    data_objects (0.10.16)
+    data_objects (0.10.17)
       addressable (~> 2.1)
     dm-aggregates (1.2.0)
       dm-core (~> 1.2.0)
@@ -48,32 +42,36 @@ GEM
     dm-sqlite-adapter (1.2.0)
       dm-do-adapter (~> 1.2.0)
       do_sqlite3 (~> 0.10.6)
-    do_sqlite3 (0.10.16)
-      data_objects (= 0.10.16)
-    domain_name (0.5.24)
+    do_sqlite3 (0.10.17)
+      data_objects (= 0.10.17)
+    domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     fastercsv (1.5.5)
     highline (1.7.10)
-    http-cookie (1.0.2)
+    http-cookie (1.0.3)
       domain_name (~> 0.5)
     json (1.8.6)
-    json_pure (1.8.2)
-    memoist (0.12.0)
+    json_pure (1.8.6)
+    memoist (0.16.0)
     metaclass (0.0.4)
-    mime-types (1.25.1)
-    minitest (5.9.0)
-    mocha (1.1.0)
+    mime-types (2.99.3)
+    minitest (5.11.3)
+    mocha (1.5.0)
       metaclass (~> 0.0.1)
-    multi_json (1.11.2)
-    netrc (0.10.3)
+    multi_json (1.13.1)
+    netrc (0.11.0)
+    public_suffix (3.0.2)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
-    terminal-table (1.5.2)
+    rugged (0.27.2)
+    terminal-table (1.8.0)
+      unicode-display_width (~> 1.1, >= 1.1.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.1)
+    unf_ext (0.0.7.5)
+    unicode-display_width (1.4.0)
 
 PLATFORMS
   ruby
@@ -90,7 +88,7 @@ DEPENDENCIES
   minitest
   mocha
   rubytree!
-  rugged!
+  rugged
   terminal-table
 
 BUNDLED WITH
