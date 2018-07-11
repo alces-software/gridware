@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 package_name='gridware-common'
 
@@ -25,6 +26,7 @@ popd > /dev/null
 
 pushd "${temp_dir}"/data/opt/gridware > /dev/null
 bundle install --without="development test" --path=vendor
+bundle config rugged --use-system-libraries
 
 rm -rf Rakefile vendor/cache bin .gitignore README.md
 rm -rf vendor/ruby/2.5.0/bundler/gems/rugged-*/{test,ext,.git,vendor/libgit2} \
