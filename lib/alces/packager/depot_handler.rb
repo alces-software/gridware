@@ -78,7 +78,7 @@ module Alces
 
         def remote_package_exists?(path)
           url = URI.parse(path)
-          resp = Net::HTTP.start(url.host, url.port, use_ssl: url.scheme == 'https') do |http|
+          resp = Net::HTTP.start(url.host, url.port, :ENV, :ENV, use_ssl: url.scheme == 'https') do |http|
             http.open_timeout = 2
             http.read_timeout = 2
             http.head(url.path)
