@@ -29,7 +29,7 @@ gem 'data_objects', git: 'https://github.com/vhost-api/do'
 gem 'alces-tools', '>= 0.13.0'
 gem 'commander'
 gem 'terminal-table'
-gem 'rugged'
+gem 'rugged', git: 'git://github.com/libgit2/rugged.git', submodules: true
 gem 'dm-rest-adapter', '1.3.0.alces0'
 gem 'dm-sqlite-adapter', '>= 1.2.0'
 gem 'dm-migrations', '>= 1.2.0'
