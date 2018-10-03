@@ -22,10 +22,14 @@
 source 'http://rubygems.org'
 source 'http://gems.alces-software.com'
 
+# The vanilla version of 'do' has a ::Fixnum deprecation warning, the vhost-api
+# fork removes the use of ::Fixnum and replaces it with Integer
+gem 'data_objects', git: 'https://github.com/vhost-api/do'
+
 gem 'alces-tools', '>= 0.13.0'
 gem 'commander'
 gem 'terminal-table'
-gem 'rugged', git: 'git://github.com/libgit2/rugged.git', submodules: true
+gem 'rugged'
 gem 'dm-rest-adapter', '1.3.0.alces0'
 gem 'dm-sqlite-adapter', '>= 1.2.0'
 gem 'dm-migrations', '>= 1.2.0'

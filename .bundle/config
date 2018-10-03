@@ -1,0 +1,2 @@
+---
+BUNDLE_BUILD__RUGGED: "--local --use-system-libraries"
