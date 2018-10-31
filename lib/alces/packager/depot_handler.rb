@@ -113,28 +113,6 @@ module Alces
         update_repository(repo)
       end
 
-      def update_repository(repo)
-        say "Updating depot repository: #{repo.name}"
-        doing 'Update'
-        begin
-          status, rev = repo.update!
-          case status
-          when :ok
-            say "#{'OK'.color(:green)} (At: #{rev})"
-          when :uptodate
-            say "#{'OK'.color(:green)} (Up-to-date: #{rev})"
-          when :not_updateable
-            say "#{'SKIP'.color(:yellow)} (Not updateable, no remote configured)"
-          when :outofsync
-            say "#{'SKIP'.color(:yellow)} (Out of sync: #{rev})"
-          when :nopermission
-            say "#{'SKIP'.color(:yellow)} (No permission)"
-          end
-        rescue
-          say "#{'FAIL'.color(:red)} (#{$!.message})"
-        end
-      end
-
       def list
         depots = DepotRepo.all.map(&:depots).flatten
         if options.oneline
@@ -311,6 +289,28 @@ EOF
       end
 
       private
+      def update_repository(repo)
+        say "Updating depot repository: #{repo.name}"
+        doing 'Update'
+        begin
+          status, rev = repo.update!
+          case status
+          when :ok
+            say "#{'OK'.color(:green)} (At: #{rev})"
+          when :uptodate
+            say "#{'OK'.color(:green)} (Up-to-date: #{rev})"
+          when :not_updateable
+            say "#{'SKIP'.color(:yellow)} (Not updateable, no remote configured)"
+          when :outofsync
+            say "#{'SKIP'.color(:yellow)} (Out of sync: #{rev})"
+          when :nopermission
+            say "#{'SKIP'.color(:yellow)} (No permission)"
+          end
+        rescue
+          say "#{'FAIL'.color(:red)} (#{$!.message})"
+        end
+      end
+
       def depot
         @depot ||= (
           raise MissingArgumentError, 'Please supply a depot name' if depot_name.nil?
