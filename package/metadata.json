@@ -2,7 +2,7 @@
   "type": "packages",
   "attributes": {
     "name": "gridware-common",
-    "version": "2.1.2-dev",
+    "version": "2.1.3",
     "summary": "Alces Gridware common components",
     "username": "alces",
     "dependencies": [
